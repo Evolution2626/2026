@@ -24,7 +24,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   public static int flR = 11;
   public static int frR = 43;
-  public static int blR = 8;
+  public static int blR = 40;
   public static int brR = 20;
 
   public static int flD = 5;
@@ -42,10 +42,10 @@ public final class Constants {
   public static int feeder = 0;
   
 
-  public static double flEOffset = -Math.PI/2+0.15;
-  public static double frEOffset = 0.15;
-  public static double blEOffset = -2.37;
-  public static double brEOffset = 0.38;
+  public static double flEOffset = 0;
+  public static double frEOffset = 0;
+  public static double blEOffset = 0;
+  public static double brEOffset = 0;
 
   public static double driveKp = 1.0;
   public static double driveKi = 0.0;
