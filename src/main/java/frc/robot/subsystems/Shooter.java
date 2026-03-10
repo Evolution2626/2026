@@ -4,11 +4,60 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 public class Shooter extends SubsystemBase {
+  private SparkFlex shooterMotor;
+  private SparkFlexConfig shooterConfig = new SparkFlexConfig();
+
+  private SparkMax hoodMotor;
+  private SparkMaxConfig hoodConfig = new SparkMaxConfig();
+
+  public enum ShooterState {
+    SHOOTING, STOPPED
+  }
+  private ShooterState shooterState = ShooterState.STOPPED;
   /** Creates a new Shooter. */
-  public Shooter() {}
+  public Shooter() {
+    shooterMotor = new SparkFlex(Constants.shooterMotorID, SparkFlex.MotorType.kBrushless);
+    shooterConfig.inverted(false)
+                    .idleMode(IdleMode.kCoast)
+                    .smartCurrentLimit(20)
+                    .closedLoopRampRate(0.15)
+                    .openLoopRampRate(0.2);
+    shooterMotor.configure(shooterConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
+
+    hoodMotor = new SparkMax(Constants.hoodMotorID, SparkMax.MotorType.kBrushless);
+    hoodConfig.inverted(false)
+                    .idleMode(IdleMode.kBrake)
+                    .smartCurrentLimit(20)
+                    .closedLoopRampRate(0.15)
+                    .openLoopRampRate(0.2);
+    hoodMotor.configure(hoodConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
+  }
+
+  public void setShooterState(ShooterState state) {//TODO configure closedloop shooter speed control
+    shooterState = state;
+    switch (shooterState) {
+      case SHOOTING:
+        shooterMotor.set(0.5);
+        break;
+      case STOPPED:
+        shooterMotor.set(0);
+        break;
+    }
+  }
+  
+  public ShooterState getShooterState() {
+    return shooterState;
+  }
 
   @Override
   public void periodic() {
