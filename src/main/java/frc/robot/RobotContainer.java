@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.Shooter;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -25,7 +25,7 @@ public class RobotContainer {
    private static final CommandXboxController controller1 = new CommandXboxController(1);
   private static final Drivetrain drivetrain = new Drivetrain();
   private static final Limelight limelight = new Limelight();
-  private static final Shooter shooter = new Shooter();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings

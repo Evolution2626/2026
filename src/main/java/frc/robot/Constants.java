@@ -54,4 +54,11 @@ public final class Constants {
   public static double RPStoMPS = 4*Math.PI*2.54/100 ;
 
 
+  public static int intakeMotorID = 101;
+  public static int turretMotorID = 102;
+  public static int shooterMotorID = 103;
+  public static int feederMotorID = 104;
+  public static int hoodMotorID = 105;
+
+
 }
