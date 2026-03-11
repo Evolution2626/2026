@@ -107,10 +107,10 @@ public class Drivetrain extends SubsystemBase {
                     .inverted(false)
                     .idleMode(IdleMode.kBrake)
                     .smartCurrentLimit(20)
-                    .closedLoopRampRate(0.15)
+                    .closedLoopRampRate(0.01)
                     .openLoopRampRate(0.2)
                     .closedLoop.feedbackSensor(FeedbackSensor.kAnalogSensor)
-                    .p(1.0)
+                    .p(2)
                     .i(0)
                     .d(0)
                     .positionWrappingInputRange(0, 3.3)
@@ -162,19 +162,19 @@ public class Drivetrain extends SubsystemBase {
       case 0:
         double v = MathUtil.clamp(flRotationMotor.getAnalog().getPosition(), 0.0, 3.3);
         double angle = (v / 3.3) * 2.0 * Math.PI - Math.PI;
-        return angle - Constants.flEOffset;
+        return angle;
       case 1:
         double v1 = MathUtil.clamp(frRotationMotor.getAnalog().getPosition(), 0.0, 3.3);
         double angle1 = (v1 / 3.3) * 2.0 * Math.PI - Math.PI;
-        return angle1 - Constants.frEOffset;
+        return angle1;
       case 2:
         double v2 = MathUtil.clamp(blRotationMotor.getAnalog().getPosition(), 0.0, 3.3);
         double angle2 = (v2 / 3.3) * 2.0 * Math.PI - Math.PI;
-        return angle2 - Constants.blEOffset;
+        return angle2;
       case 3:
         double v3 = MathUtil.clamp(brRotationMotor.getAnalog().getPosition(), 0.0, 3.3);
         double angle3 = (v3 / 3.3) * 2.0 * Math.PI - Math.PI;
-        return angle3 - Constants.brEOffset;
+        return angle3;
       default:
         return 0;
     }
@@ -294,5 +294,10 @@ public class Drivetrain extends SubsystemBase {
     //SmartDashboard.putNumber("analog error", blRotationMotor.getClosedLoopController().getSetpoint());
     SmartDashboard.putNumber("Gyro", getGyroAngle());
     SmartDashboard.putNumber("velocity", frDriveMotor.getVelocity().getValueAsDouble());
+
+     SmartDashboard.putNumber("FL", returnEncoderAngle(0));
+    SmartDashboard.putNumber("FR",returnEncoderAngle(1));
+    SmartDashboard.putNumber("BL", returnEncoderAngle(2));
+    SmartDashboard.putNumber("BR", returnEncoderAngle(3));
   }
 }

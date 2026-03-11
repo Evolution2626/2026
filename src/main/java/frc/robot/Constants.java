@@ -42,10 +42,10 @@ public final class Constants {
   public static int feeder = 0;
   
 
-  public static double flEOffset = 0;
-  public static double frEOffset = 0;
-  public static double blEOffset = 0;
-  public static double brEOffset = 0;
+  public static double flEOffset = -1.48;
+  public static double frEOffset = 0.187;
+  public static double blEOffset = -2.41;
+  public static double brEOffset = 0.42;
 
   public static double driveKp = 1.0;
   public static double driveKi = 0.0;
