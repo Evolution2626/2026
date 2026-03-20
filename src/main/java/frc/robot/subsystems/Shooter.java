@@ -20,8 +20,11 @@ public class Shooter extends SubsystemBase {
   private SparkMax hoodMotor;
   private SparkMaxConfig hoodConfig = new SparkMaxConfig();
 
+  private SparkMax feederMotor;
+  private SparkMaxConfig feederConfig = new SparkMaxConfig();
+
   public enum ShooterState {
-    SHOOTING, STOPPED
+    RAMPING_UP, SHOOTING, STOPPED
   }
   private ShooterState shooterState = ShooterState.STOPPED;
   /** Creates a new Shooter. */
@@ -41,16 +44,28 @@ public class Shooter extends SubsystemBase {
                     .closedLoopRampRate(0.15)
                     .openLoopRampRate(0.2);
     hoodMotor.configure(hoodConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
+
+    feederMotor = new SparkMax(Constants.feederMotorID, SparkMax.MotorType.kBrushless);
+    feederConfig.inverted(false)
+                    .idleMode(IdleMode.kBrake)
+                    .smartCurrentLimit(20)
+                    .closedLoopRampRate(0.15)
+                    .openLoopRampRate(0.2);
+    feederMotor.configure(feederConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
   }
 
   public void setShooterState(ShooterState state) {//TODO configure closedloop shooter speed control
     shooterState = state;
     switch (shooterState) {
-      case SHOOTING:
-        shooterMotor.set(0.5);
+      case RAMPING_UP://Start the shooter
+        
         break;
-      case STOPPED:
+      case SHOOTING://Start the feeder
+        feederMotor.set(0.5);
+        break;
+      case STOPPED://Stop everything
         shooterMotor.set(0);
+        feederMotor.set(0);
         break;
     }
   }

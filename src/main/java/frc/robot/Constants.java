@@ -59,9 +59,10 @@ public final class Constants {
   public static int intakeMotorID = 101;
   public static int turretMotorID = 102;
   public static int shooterMotorID = 103;
-  public static int feederMotorID = 104;
+  public static int rollerMotorID = 104;
   public static int hoodMotorID = 105;
   public static int intakeSliderMotorID = 106;
+  public static int feederMotorID = 107;
 
 
 }

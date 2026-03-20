@@ -5,14 +5,14 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.Transfer;
+import frc.robot.subsystems.Roller;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class StopShootingCommand extends InstantCommand {
-  private Transfer transfer;
-  public StopShootingCommand(Transfer transfer) {
+  private Roller transfer;
+  public StopShootingCommand(Roller transfer) {
     this.transfer = transfer;
     addRequirements(transfer);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -22,6 +22,6 @@ public class StopShootingCommand extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    transfer.setTransferState(Transfer.TransferState.STOPPED);
+    transfer.setRollerState(Roller.RollerState.STOPPED);
   }
 }

@@ -11,40 +11,40 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Transfer extends SubsystemBase {
-  private SparkMax transferMotor;
-  private SparkMaxConfig transferConfig = new SparkMaxConfig();
+public class Roller extends SubsystemBase {
+  private SparkMax rollerMotor;
+  private SparkMaxConfig rollerMotorConfig = new SparkMaxConfig();
 
-   public enum TransferState {
+   public enum RollerState {
     INTAKING, OUTTAKING, STOPPED
   }
-  private TransferState transferState = TransferState.STOPPED;
+  private RollerState rollerState = RollerState.STOPPED;
   /** Creates a new Transfer. */
-  public Transfer() {
-    transferMotor = new SparkMax(Constants.feederMotorID, SparkMax.MotorType.kBrushless);
-    transferConfig.inverted(false)
+  public Roller() {
+    rollerMotor = new SparkMax(Constants.rollerMotorID, SparkMax.MotorType.kBrushless);
+    rollerMotorConfig.inverted(false)
                     .idleMode(IdleMode.kBrake)
                     .smartCurrentLimit(20)
                     .closedLoopRampRate(0.15)
                     .openLoopRampRate(0.2);
-    transferMotor.configure(transferConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
+    rollerMotor.configure(rollerMotorConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
   }
-  public void setTransferState(TransferState state) {
-    transferState = state;
-    switch (transferState) {
+  public void setRollerState(RollerState state) {
+    rollerState = state;
+    switch (rollerState) {
       case INTAKING:
-        transferMotor.set(0.5);
+        rollerMotor.set(0.5);
         break;
       case OUTTAKING:
-        transferMotor.set(-0.5);
+        rollerMotor.set(-0.5);
         break;
       case STOPPED:
-        transferMotor.set(0);
+        rollerMotor.set(0);
         break;
     }
   }
-  public TransferState getTransferState() {
-    return transferState;
+  public RollerState getRollerState() {
+    return rollerState;
   }
 
   @Override
