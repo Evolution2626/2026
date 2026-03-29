@@ -36,6 +36,9 @@ public class Hood extends SubsystemBase {
     public HoodState getHoodState() {
       return hoodState;
     }
+    public void setHoodSpeed(double speed) {
+      hoodMotor.set(speed);
+    }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

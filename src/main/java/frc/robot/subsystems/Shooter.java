@@ -54,11 +54,11 @@ public class Shooter extends SubsystemBase {
     feederMotor.configure(feederConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
   }
 
-  public void setShooterState(ShooterState state) {//TODO configure closedloop shooter speed control
+  public void setShooterState(ShooterState state) {
     shooterState = state;
     switch (shooterState) {
       case RAMPING_UP://Start the shooter
-        
+        startShooter();
         break;
       case SHOOTING://Start the feeder
         feederMotor.set(0.5);
@@ -68,6 +68,10 @@ public class Shooter extends SubsystemBase {
         feederMotor.set(0);
         break;
     }
+  }
+
+  public void startShooter(){
+    shooterMotor.set(0.5);//TODO implement closed loop control to target velocity
   }
   
   public ShooterState getShooterState() {

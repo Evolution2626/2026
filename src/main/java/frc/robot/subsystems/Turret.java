@@ -14,6 +14,10 @@ import frc.robot.Constants;
 public class Turret extends SubsystemBase {
   private SparkMax turretMotor;
   private SparkMaxConfig turretConfig = new SparkMaxConfig();
+  enum TurretState {
+    TRACKING, STOPPED
+  }
+  private TurretState turretState = TurretState.STOPPED;
   /** Creates a new Turret. */
   public Turret() {
     turretMotor = new SparkMax(Constants.turretMotorID, SparkMax.MotorType.kBrushless);
@@ -26,6 +30,12 @@ public class Turret extends SubsystemBase {
   }
   public void setTurretSpeed(double speed) {
     turretMotor.set(speed);
+  }
+  public void setTurretState(TurretState state) {
+    turretState = state;
+  }
+  public TurretState getTurretState() {
+    return turretState;
   }
   
   @Override
