@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -13,12 +14,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Hood extends SubsystemBase {
   /** Creates a new Hood. */
   private SparkMax hoodMotor;
+  private AbsoluteEncoder hoodEncoder;
   private SparkMaxConfig hoodConfig = new SparkMaxConfig();
 
   public enum HoodState {
     TRACKING, STOPPED
   }
+
   private HoodState hoodState = HoodState.STOPPED;  
+
+
   public Hood() {
     hoodMotor = new SparkMax(1, SparkMax.MotorType.kBrushless);
     hoodConfig.inverted(false)
@@ -27,6 +32,7 @@ public class Hood extends SubsystemBase {
                     .closedLoopRampRate(0.15)
                     .openLoopRampRate(0.2);
     hoodMotor.configure(hoodConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
+    hoodEncoder = hoodMotor.getAbsoluteEncoder();
   }
 
     public void setHoodState(HoodState state) {
@@ -39,8 +45,14 @@ public class Hood extends SubsystemBase {
     public void setHoodSpeed(double speed) {
       hoodMotor.set(speed);
     }
+    public double getEncoderValue() {
+      return hoodEncoder.getPosition();
+    }
+    
+ 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
   }
+      
 }
