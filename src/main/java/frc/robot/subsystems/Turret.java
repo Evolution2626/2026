@@ -58,6 +58,10 @@ public class Turret extends SubsystemBase {
     }
     return power;
   }
+  public double convertTurretAngleToEncoder(double angle){
+    return (angle/360)*6.25;
+
+  }
   @Override
   public void periodic() {
       currentValue = turretEncoder.getPosition();

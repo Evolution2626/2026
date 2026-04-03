@@ -5,19 +5,17 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Turret;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class TurretTrackingCommand extends Command {
   Turret turret;
-  Limelight limelight;
+
 
   /** Creates a new TurretTrackingCommand. */
-  public TurretTrackingCommand(Turret turret, Limelight limelight) {
+  public TurretTrackingCommand(Turret turret) {
     this.turret = turret;
-    this.limelight = limelight;
-    addRequirements(turret, limelight);
+    addRequirements(turret);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 

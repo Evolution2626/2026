@@ -6,17 +6,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Hood;
-import frc.robot.subsystems.Limelight;
+
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class HoodTrackingCommand extends Command {
   Hood hood;
-  Limelight limelight;
   /** Creates a new HoodTrackingCommand. */
-  public HoodTrackingCommand(Hood hood, Limelight limelight) {
+  public HoodTrackingCommand(Hood hood) {
     this.hood = hood;
-    this.limelight = limelight;
-    addRequirements(hood, limelight);
+    addRequirements(hood);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
