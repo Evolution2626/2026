@@ -22,10 +22,10 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-  public static int flR = 11;
-  public static int frR = 43;
-  public static int blR = 40;
-  public static int brR = 20;
+  public static int flR = 43;
+  public static int frR = 20;
+  public static int blR = 11;
+  public static int brR = 40;
 
   public static int flD = 5;
   public static int frD = 6;
@@ -56,13 +56,13 @@ public final class Constants {
   public static int intakeSliderLimitSwitchID = 0;
 
 
-  public static int intakeMotorID = 101;
-  public static int turretMotorID = 102;
-  public static int shooterMotorID = 103;
-  public static int rollerMotorID = 104;
-  public static int hoodMotorID = 105;
-  public static int intakeSliderMotorID = 106;
-  public static int feederMotorID = 107;
+  public static int intakeMotorID = 9;
+  public static int turretMotorID = 10;
+  public static int shooterMotorID = 33;
+  public static int rollerMotorID = 56;
+  public static int hoodMotorID = 36;
+  public static int intakeSliderMotorID = 45;
+  public static int feederMotorID = 35;
 
 
 }
