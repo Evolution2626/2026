@@ -36,11 +36,11 @@ public class Shooter extends SubsystemBase {
     shooterMotor = new SparkFlex(Constants.shooterMotorID, SparkFlex.MotorType.kBrushless);
     shooterConfig.inverted(false)
                     .idleMode(IdleMode.kCoast)
-                    .smartCurrentLimit(60, 60)
-                    .closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                    .p(0.0007)
-                    .i(0)
-                    .d(0);
+                    .smartCurrentLimit(60, 60);
+                    //.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                    //.p(0.0007)
+                    //.i(0)
+                    //.d(0);
     shooterMotor.configure(shooterConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
 
     shooterController = shooterMotor.getClosedLoopController();
@@ -75,11 +75,13 @@ public class Shooter extends SubsystemBase {
   public void startShooter(){
     //shooterMotor.set(0.75);//TODO implement closed loop control to target velocity
    // shooterController.setSetpoint(5000, ControlType.kVelocity);
-       shooterController.setSetpoint(1, ControlType.kDutyCycle);
+       //shooterController.setSetpoint(1, ControlType.kDutyCycle);
+       shooterMotor.set(1);
 
   }
   public void stopShooter(){
-    shooterController.setSetpoint(0.05, ControlType.kDutyCycle);
+    //shooterController.setSetpoint(0.05, ControlType.kDutyCycle);
+    shooterMotor.set(0.05);
 
   }
   public void startFeeder(){
