@@ -13,18 +13,18 @@ import frc.robot.subsystems.Roller;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class StopIntakeCommand extends InstantCommand {
   private Intake intake;
-  private Roller transfer;
-  public StopIntakeCommand(Intake intake, Roller transfer) {
+
+  public StopIntakeCommand(Intake intake) {
     this.intake = intake;
-    this.transfer = transfer;
-    addRequirements(intake, transfer);
+
+    addRequirements(intake);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.setIntakeState(Intake.IntakeState.STOPPED);
-    transfer.setRollerState(Roller.RollerState.STOPPED);
+    intake.setPower(0);
+   
   }
 }

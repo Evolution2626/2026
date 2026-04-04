@@ -9,8 +9,10 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.util.Range;
 
 public class Turret extends SubsystemBase {
   private SparkMax turretMotor;
@@ -24,14 +26,14 @@ public class Turret extends SubsystemBase {
   private double turn = 0;
   private double lastvalue = 0;
   private double currentValue = 0;
-  private double minTurretRotation = 0;
-  private double maxTurretRotation = 2;
+  private double minTurretRotation = -1.5;
+  private double maxTurretRotation = 2.5;
   /** Creates a new Turret. */
   public Turret() {
     turretMotor = new SparkMax(Constants.turretMotorID, SparkMax.MotorType.kBrushless);
     turretConfig.inverted(false)
                     .idleMode(IdleMode.kBrake)
-                    .smartCurrentLimit(20)
+                    .smartCurrentLimit(40)
                     .closedLoopRampRate(0.15)
                     .openLoopRampRate(0.2);
     turretMotor.configure(turretConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
@@ -52,9 +54,9 @@ public class Turret extends SubsystemBase {
   
   private double limitTurretRotation(double power){//TODO check if rotation power are correct
     if(getEncoderValue() > maxTurretRotation){
-      return -0.1;
+      return Range.coerce(-1, 0, power);
     } else if(getEncoderValue() < minTurretRotation){
-      return 0.1;
+      return Range.coerce(0, 1, power);
     }
     return power;
   }
@@ -71,6 +73,7 @@ public class Turret extends SubsystemBase {
       turn++;
     }
         lastvalue = currentValue;
-  }
   
+  SmartDashboard.putNumber("turret encoder", getEncoderValue());
+  }
 }

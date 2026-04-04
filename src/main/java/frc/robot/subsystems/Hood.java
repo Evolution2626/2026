@@ -6,10 +6,14 @@ package frc.robot.subsystems;
 
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.util.Range;
 
 public class Hood extends SubsystemBase {
   /** Creates a new Hood. */
@@ -17,6 +21,8 @@ public class Hood extends SubsystemBase {
   private AbsoluteEncoder hoodEncoder;
   private SparkMaxConfig hoodConfig = new SparkMaxConfig();
 
+  double maxValue = 0.7;
+  double minValue = 0.38;
   public enum HoodState {
     TRACKING, STOPPED
   }
@@ -25,12 +31,13 @@ public class Hood extends SubsystemBase {
 
 
   public Hood() {
-    hoodMotor = new SparkMax(1, SparkMax.MotorType.kBrushless);
+    hoodMotor = new SparkMax(Constants.hoodMotorID, SparkMax.MotorType.kBrushless);
     hoodConfig.inverted(false)
                     .idleMode(com.revrobotics.spark.config.SparkBaseConfig.IdleMode.kBrake)
-                    .smartCurrentLimit(20)
+                    .smartCurrentLimit(40)
                     .closedLoopRampRate(0.15)
-                    .openLoopRampRate(0.2);
+                    .openLoopRampRate(0.2)
+                    .absoluteEncoder.setSparkMaxDataPortConfig();
     hoodMotor.configure(hoodConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
     hoodEncoder = hoodMotor.getAbsoluteEncoder();
   }
@@ -43,7 +50,18 @@ public class Hood extends SubsystemBase {
       return hoodState;
     }
     public void setHoodSpeed(double speed) {
-      hoodMotor.set(speed);
+      SmartDashboard.putNumber("power", speed);
+
+      if(getEncoderValue() >= maxValue){
+        hoodMotor.set(Range.coerce(0, 1, speed));
+      }
+      else if(getEncoderValue() <= minValue){
+        hoodMotor.set(Range.coerce(-1, 0, speed));
+      }
+      else{
+ hoodMotor.set(speed);
+      }
+     
     }
     public double getEncoderValue() {
       return hoodEncoder.getPosition();
@@ -53,6 +71,10 @@ public class Hood extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("hood encoder value", getEncoderValue());
+    //bas 0.70
+    //haut 0.38
+    
   }
       
 }

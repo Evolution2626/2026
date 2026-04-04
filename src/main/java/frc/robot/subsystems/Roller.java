@@ -24,7 +24,7 @@ public class Roller extends SubsystemBase {
     rollerMotor = new SparkMax(Constants.rollerMotorID, SparkMax.MotorType.kBrushless);
     rollerMotorConfig.inverted(false)
                     .idleMode(IdleMode.kBrake)
-                    .smartCurrentLimit(20)
+                    .smartCurrentLimit(60,40)
                     .closedLoopRampRate(0.15)
                     .openLoopRampRate(0.2);
     rollerMotor.configure(rollerMotorConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
@@ -33,18 +33,21 @@ public class Roller extends SubsystemBase {
     rollerState = state;
     switch (rollerState) {
       case INTAKING:
-        rollerMotor.set(0.5);
+       // rollerMotor.set(0.5);
         break;
       case OUTTAKING:
-        rollerMotor.set(-0.5);
+       // rollerMotor.set(-0.5);
         break;
       case STOPPED:
-        rollerMotor.set(0);
+       // rollerMotor.set(0);
         break;
     }
   }
   public RollerState getRollerState() {
     return rollerState;
+  }
+  public void setPower(double power){
+    rollerMotor.set(power);
   }
 
   @Override

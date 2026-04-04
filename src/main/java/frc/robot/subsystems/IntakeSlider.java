@@ -37,16 +37,19 @@ public class IntakeSlider extends SubsystemBase {
   public IntakeSliderState getIntakeSliderState() {
     return intakeSliderState;
   }
+  public void setPower(double power){
+    intakeSliderMotor.set(power);
+  }
 
   @Override
   public void periodic() {
     if(intakeSliderState == IntakeSliderState.EXTENDED) {
-      intakeSliderMotor.set(0.5);
+     // intakeSliderMotor.set(0.5);
     } else if (intakeSliderState == IntakeSliderState.RETRACTED) {
-      intakeSliderMotor.set(-0.5);
+      //intakeSliderMotor.set(-0.5);
     }
     else{
-      intakeSliderMotor.set(0);
+      //intakeSliderMotor.set(0);
     }
     // This method will be called once per scheduler run
   }

@@ -25,7 +25,7 @@ public class Intake extends SubsystemBase {
     intakeMotor = new SparkMax(Constants.intakeMotorID, SparkMax.MotorType.kBrushless);
     intakeConfig.inverted(false)
                     .idleMode(IdleMode.kBrake)
-                    .smartCurrentLimit(20)
+                    .smartCurrentLimit(40, 40)
                     .closedLoopRampRate(0.15)
                     .openLoopRampRate(0.2);
     intakeMotor.configure(intakeConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
@@ -35,15 +35,18 @@ public class Intake extends SubsystemBase {
     intakeState = state;
     switch (intakeState) {
       case INTAKING:
-        intakeMotor.set(0.5);
+        intakeMotor.set(1.0);
         break;
       case OUTTAKING:
-        intakeMotor.set(-0.5);
+        intakeMotor.set(-1.0);
         break;
       case STOPPED:
         intakeMotor.set(0);
         break;
     }
+  }
+  public void setPower(double power){
+    intakeMotor.set(power);
   }
 
   public IntakeState getIntakeState() {

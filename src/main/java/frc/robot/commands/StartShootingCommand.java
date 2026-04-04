@@ -6,21 +6,25 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Roller;
+import frc.robot.subsystems.Shooter;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class StartShootingCommand extends InstantCommand {
-  private Roller transfer;
-  public StartShootingCommand(Roller transfer) {
-    this.transfer = transfer;
-    addRequirements(transfer);
+  private Roller roller;
+  private Shooter shooter;
+  public StartShootingCommand(Roller transfer, Shooter shooter) {
+    this.roller = transfer;
+    this.shooter = shooter;
+    addRequirements(transfer, shooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    transfer.setRollerState(Roller.RollerState.INTAKING);
+  roller.setPower(-1);
+  shooter.startFeeder();
   }
 }

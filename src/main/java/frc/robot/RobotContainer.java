@@ -5,11 +5,28 @@
 package frc.robot;
 
 
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveCommand;
+import frc.robot.commands.MoveHoodCommand;
+import frc.robot.commands.MoveTurretCommand;
+import frc.robot.commands.ReverseIntakeCommand;
+import frc.robot.commands.StartIntakeCommand;
+import frc.robot.commands.StartShooterCommand;
+import frc.robot.commands.StartShootingCommand;
+import frc.robot.commands.StopIntakeCommand;
+import frc.robot.commands.StopShooterCommand;
+import frc.robot.commands.StopShootingCommand;
+import frc.robot.commands.UseSlider;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeSlider;
+import frc.robot.subsystems.Roller;
 
 
 
@@ -24,12 +41,21 @@ public class RobotContainer {
   private static final CommandXboxController controller = new CommandXboxController(0);
    private static final CommandXboxController controller1 = new CommandXboxController(1);
   private static final Drivetrain drivetrain = new Drivetrain();
+  private static final Shooter shooter = new Shooter();
+  private static final Hood hood = new Hood();
+  private static final IntakeSlider intakeSlider = new IntakeSlider();
+  private static final Roller roller = new Roller();
+  private static final Intake intake = new Intake();
+  private static final Turret turret = new Turret();
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controller));
+    intakeSlider.setDefaultCommand(new UseSlider(intakeSlider, controller1));
+    hood.setDefaultCommand(new MoveHoodCommand(hood, controller1));
+    turret.setDefaultCommand(new MoveTurretCommand(turret, controller1));
     configureBindings();
   }
 
@@ -44,6 +70,16 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+    controller.a().onTrue(new StartShooterCommand(shooter));
+    controller.b().onTrue(new StopShooterCommand(shooter));
+    controller.y().onTrue(new StartShootingCommand(roller, shooter));
+    controller.y().onFalse(new StopShootingCommand(roller, shooter));
+
+    controller.rightTrigger().onTrue(new StartIntakeCommand(intake));
+    controller.rightTrigger().onFalse(new StopIntakeCommand(intake));
+    controller.leftTrigger().onTrue(new ReverseIntakeCommand(intake));
+    controller.leftTrigger().onFalse(new StopIntakeCommand(intake));
+  
     
   }
 

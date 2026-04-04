@@ -89,6 +89,10 @@ public class Drivetrain extends SubsystemBase {
 
      drivingConfig.withFeedback(feedBackConfig);
      drivingConfig.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
+     drivingConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+     drivingConfig.CurrentLimits.StatorCurrentLimit = 40;
+     drivingConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+     drivingConfig.CurrentLimits.SupplyCurrentLimit = 80;
     
     
     flDriveMotor.getConfigurator().apply(drivingConfig);

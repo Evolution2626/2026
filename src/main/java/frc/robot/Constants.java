@@ -27,10 +27,10 @@ public final class Constants {
   public static int blR = 11;
   public static int brR = 40;
 
-  public static int flD = 5;
-  public static int frD = 6;
-  public static int blD = 3;
-  public static int brD = 4;
+  public static int flD = 6;
+  public static int frD = 4;
+  public static int blD = 5;
+  public static int brD = 3;
 
   public static int flE = 2;
   public static int frE = 1;
@@ -42,10 +42,12 @@ public final class Constants {
   public static int feeder = 0;
   
 
-  public static double flEOffset = -1.48;
-  public static double frEOffset = 0.187;
-  public static double blEOffset = -2.41;
-  public static double brEOffset = 0.42;
+  public static double flEOffset =-1.47;
+  public static double frEOffset =-1.12;
+  public static double blEOffset = -3.05
+  
+  ;
+  public static double brEOffset = 2.37;
 
   public static double driveKp = 1.0;
   public static double driveKi = 0.0;
