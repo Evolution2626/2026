@@ -25,7 +25,6 @@ public class Shooter extends SubsystemBase {
   private SparkFlexConfig shooterConfig = new SparkFlexConfig();
   private SparkClosedLoopController shooterController;
 
-
   private SparkMax feederMotor;
   private SparkMaxConfig feederConfig = new SparkMaxConfig();
 
@@ -36,54 +35,62 @@ public class Shooter extends SubsystemBase {
   public Shooter() {
     shooterMotor = new SparkFlex(Constants.shooterMotorID, SparkFlex.MotorType.kBrushless);
     shooterConfig.inverted(false)
-                    .idleMode(IdleMode.kCoast)
-                    .smartCurrentLimit(60, 60);
-                    //.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                    //.p(0.0007)
-                    //.i(0)
-                    //.d(0);
-    shooterMotor.configure(shooterConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
+        .idleMode(IdleMode.kCoast)
+        .smartCurrentLimit(60, 60);
+    // .closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+    // .p(0.0007)
+    // .i(0)
+    // .d(0);
+    shooterMotor.configure(shooterConfig, (com.revrobotics.spark.SparkBase.ResetMode) null,
+        (com.revrobotics.spark.SparkBase.PersistMode) null);
 
     shooterController = shooterMotor.getClosedLoopController();
 
-
     feederMotor = new SparkMax(Constants.feederMotorID, SparkMax.MotorType.kBrushless);
     feederConfig.inverted(false)
-                    .idleMode(IdleMode.kBrake)
-                    .smartCurrentLimit(60)
-                    .closedLoopRampRate(0.15)
-                    .openLoopRampRate(0.2);
-    feederMotor.configure(feederConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
- 
-  }
-
-  public void startShooter(){
-    //this function should start the shooter at a random power, then the aimbot will adjust the power to the correct value
-                //shooterController.setSetpoint(1, ControlType.kDutyCycle);
-       shooterMotor.set(1);
+        .idleMode(IdleMode.kBrake)
+        .smartCurrentLimit(60)
+        .closedLoopRampRate(0.15)
+        .openLoopRampRate(0.2);
+    feederMotor.configure(feederConfig, (com.revrobotics.spark.SparkBase.ResetMode) null,
+        (com.revrobotics.spark.SparkBase.PersistMode) null);
 
   }
-  public void setShooterSpeed(double rpm){
-    //TODO implement closed loop control to target velocity
+
+  public void startShooter() {
+    // this function should start the shooter at a random power, then the aimbot
+    // will adjust the power to the correct value
+    // shooterController.setSetpoint(1, ControlType.kDutyCycle);
+    shooterMotor.set(1);
+
+  }
+
+  public void setShooterSpeed(double rpm) {
+    // TODO implement closed loop control to target velocity
     targetRPM = rpm;
     shooterController.setSetpoint(targetRPM, ControlType.kVelocity);
   }
-  public void stopShooter(){
-    //this function should stop the shooter
-    //shooterController.setSetpoint(0.05, ControlType.kDutyCycle);
+
+  public void stopShooter() {
+    // this function should stop the shooter
+    // shooterController.setSetpoint(0.05, ControlType.kDutyCycle);
     shooterMotor.set(0.05);
     targetRPM = 0;
 
   }
-  public void startFeeder(){
+
+  public void startFeeder() {
     feederMotor.set(-1.0);
   }
-  public void stopFeeder(){
+
+  public void stopFeeder() {
     feederMotor.set(0);
   }
+
   public boolean getIsTracking() {
     return isTracking;
   }
+
   public void setIsTracking(boolean tracking) {
     isTracking = tracking;
   }
@@ -92,6 +99,7 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("shooter rpm", shooterMotor.getEncoder().getVelocity());
-    //SmartDashboard.putNumber("shooter setpoint", shooterController.getSetpoint());
+    // SmartDashboard.putNumber("shooter setpoint",
+    // shooterController.getSetpoint());
   }
 }

@@ -9,9 +9,14 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.commands.Aim.HoodTrackingCommand;
+import frc.robot.commands.Aim.ShooterTrackingCommand;
+import frc.robot.commands.Aim.TurretTrackingCommand;
 import frc.robot.commands.Drivetrain.DriveCommand;
+import frc.robot.commands.InstantSetter.StartAimingCommand;
 import frc.robot.commands.InstantSetter.StartShooterCommand;
 import frc.robot.commands.InstantSetter.StartShootingCommand;
+import frc.robot.commands.InstantSetter.StopAimingCommand;
 import frc.robot.commands.InstantSetter.StopShooterCommand;
 import frc.robot.commands.InstantSetter.StopShootingCommand;
 import frc.robot.commands.InstantSetter.Intake.ReverseIntakeCommand;
@@ -53,9 +58,19 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controller));
+
+    //auto aim commands
+    shooter.setDefaultCommand(new ShooterTrackingCommand(shooter));
+    //hood.setDefaultCommand(new HoodTrackingCommand(hood));
+    //turret.setDefaultCommand(new TurretTrackingCommand(turret));
+   
+
+    //Manual control commands Deprecated soon
     intakeSlider.setDefaultCommand(new UseSlider(intakeSlider, controller1));
     hood.setDefaultCommand(new MoveHoodCommand(hood, controller1));
     turret.setDefaultCommand(new MoveTurretCommand(turret, controller1));
+
+
     configureBindings();
   }
 
@@ -70,10 +85,12 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    controller.a().onTrue(new StartShooterCommand(shooter));
-    controller.b().onTrue(new StopShooterCommand(shooter));
-    controller.y().onTrue(new StartShootingCommand(roller, shooter));
-    controller.y().onFalse(new StopShootingCommand(roller, shooter));
+    controller1.a().onTrue(new StartShooterCommand(shooter));
+    controller1.b().onTrue(new StopShooterCommand(shooter));
+    controller1.y().onTrue(new StartShootingCommand(roller, shooter));
+    controller1.y().onFalse(new StopShootingCommand(roller, shooter));
+    controller1.rightBumper().onTrue(new StartAimingCommand(turret, hood, shooter));
+    controller1.rightBumper().onFalse(new StopAimingCommand(turret, hood, shooter));
 
     controller.rightTrigger().onTrue(new StartIntakeCommand(intake));
     controller.rightTrigger().onFalse(new StopIntakeCommand(intake));

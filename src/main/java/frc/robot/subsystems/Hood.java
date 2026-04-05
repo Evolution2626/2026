@@ -23,13 +23,10 @@ public class Hood extends SubsystemBase {
 
   double maxValue = 0.7;
   double minValue = 0.38;
-  public enum HoodState {
-    TRACKING, STOPPED
-  }
 
-  private HoodState hoodState = HoodState.STOPPED;  
 
   private boolean isTracking = false;
+  private double target = -1;
   public Hood() {
     hoodMotor = new SparkMax(Constants.hoodMotorID, SparkMax.MotorType.kBrushless);
     hoodConfig.inverted(false)
@@ -42,13 +39,6 @@ public class Hood extends SubsystemBase {
     hoodEncoder = hoodMotor.getAbsoluteEncoder();
   }
 
-    public void setHoodState(HoodState state) {
-      hoodState = state;
-    }
-    
-    public HoodState getHoodState() {
-      return hoodState;
-    }
     public void setHoodSpeed(double speed) {
       SmartDashboard.putNumber("power", speed);
 
@@ -63,15 +53,23 @@ public class Hood extends SubsystemBase {
       }
      
     }
-    public double getEncoderValue() {
-      return hoodEncoder.getPosition();
-    }
+ 
     
     public boolean getIsTracking() {
       return isTracking;
     }
     public void setIsTracking(boolean tracking) {
       isTracking = tracking;
+    }
+    public double getTarget() {
+      return target;
+    }
+    public void setTarget(double target) {
+      this.target = target;
+    }
+
+    public double getEncoderValue() {
+      return hoodEncoder.getPosition();
     }
  
   @Override
