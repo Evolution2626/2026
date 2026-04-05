@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.concurrent.BlockingDeque;
+
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkClosedLoopController;
@@ -27,10 +29,9 @@ public class Shooter extends SubsystemBase {
   private SparkMax feederMotor;
   private SparkMaxConfig feederConfig = new SparkMaxConfig();
 
-  public enum ShooterState {
-    RAMPING_UP, SHOOTING, STOPPED
-  }
-  private ShooterState shooterState = ShooterState.STOPPED;
+  private double targetRPM = 0;
+  private boolean isTracking = false;
+
   /** Creates a new Shooter. */
   public Shooter() {
     shooterMotor = new SparkFlex(Constants.shooterMotorID, SparkFlex.MotorType.kBrushless);
@@ -56,32 +57,22 @@ public class Shooter extends SubsystemBase {
  
   }
 
-  /*public void setShooterState(ShooterState state) {
-    shooterState = state;
-    switch (shooterState) {
-      case RAMPING_UP://Start the shooter
-        startShooter();
-        break;
-      case SHOOTING://Start the feeder
-        feederMotor.set(0.5);
-        break;
-      case STOPPED://Stop everything
-        shooterMotor.set(0);
-        feederMotor.set(0);
-        break;
-    }
-  }*/
-
   public void startShooter(){
-    //shooterMotor.set(0.75);//TODO implement closed loop control to target velocity
-   // shooterController.setSetpoint(5000, ControlType.kVelocity);
-       //shooterController.setSetpoint(1, ControlType.kDutyCycle);
+    //this function should start the shooter at a random power, then the aimbot will adjust the power to the correct value
+                //shooterController.setSetpoint(1, ControlType.kDutyCycle);
        shooterMotor.set(1);
 
   }
+  public void setShooterSpeed(double rpm){
+    //TODO implement closed loop control to target velocity
+    targetRPM = rpm;
+    shooterController.setSetpoint(targetRPM, ControlType.kVelocity);
+  }
   public void stopShooter(){
+    //this function should stop the shooter
     //shooterController.setSetpoint(0.05, ControlType.kDutyCycle);
     shooterMotor.set(0.05);
+    targetRPM = 0;
 
   }
   public void startFeeder(){
@@ -90,9 +81,11 @@ public class Shooter extends SubsystemBase {
   public void stopFeeder(){
     feederMotor.set(0);
   }
-  
-  public ShooterState getShooterState() {
-    return shooterState;
+  public boolean getIsTracking() {
+    return isTracking;
+  }
+  public void setIsTracking(boolean tracking) {
+    isTracking = tracking;
   }
 
   @Override

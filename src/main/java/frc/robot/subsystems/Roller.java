@@ -15,10 +15,7 @@ public class Roller extends SubsystemBase {
   private SparkMax rollerMotor;
   private SparkMaxConfig rollerMotorConfig = new SparkMaxConfig();
 
-   public enum RollerState {
-    INTAKING, OUTTAKING, STOPPED
-  }
-  private RollerState rollerState = RollerState.STOPPED;
+  
   /** Creates a new Transfer. */
   public Roller() {
     rollerMotor = new SparkMax(Constants.rollerMotorID, SparkMax.MotorType.kBrushless);
@@ -29,23 +26,8 @@ public class Roller extends SubsystemBase {
                     .openLoopRampRate(0.2);
     rollerMotor.configure(rollerMotorConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
   }
-  public void setRollerState(RollerState state) {
-    rollerState = state;
-    switch (rollerState) {
-      case INTAKING:
-       // rollerMotor.set(0.5);
-        break;
-      case OUTTAKING:
-       // rollerMotor.set(-0.5);
-        break;
-      case STOPPED:
-       // rollerMotor.set(0);
-        break;
-    }
-  }
-  public RollerState getRollerState() {
-    return rollerState;
-  }
+
+
   public void setPower(double power){
     rollerMotor.set(power);
   }

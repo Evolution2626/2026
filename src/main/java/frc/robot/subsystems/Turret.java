@@ -28,6 +28,8 @@ public class Turret extends SubsystemBase {
   private double currentValue = 0;
   private double minTurretRotation = -1.5;
   private double maxTurretRotation = 2.5;
+
+  private boolean isTracking = false;
   /** Creates a new Turret. */
   public Turret() {
     turretMotor = new SparkMax(Constants.turretMotorID, SparkMax.MotorType.kBrushless);
@@ -63,6 +65,13 @@ public class Turret extends SubsystemBase {
   public double convertTurretAngleToEncoder(double angle){
     return (angle/360)*6.25;
 
+  }
+
+  public boolean getIsTracking() {
+    return isTracking;
+  }
+  public void setIsTracking(boolean tracking) {
+    isTracking = tracking;
   }
   @Override
   public void periodic() {

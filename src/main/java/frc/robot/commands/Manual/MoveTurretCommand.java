@@ -2,23 +2,22 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.Manual;
 
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.IntakeSlider;
+import frc.robot.subsystems.Turret;
 import frc.util.Range;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class UseSlider extends Command {
-  IntakeSlider intakeSlider;
+public class MoveTurretCommand extends Command {
+  Turret turret;
   CommandXboxController controller;
-  /** Creates a new UseSlider. */
-  public UseSlider(IntakeSlider intakeSlider, CommandXboxController controller) {
-    this.intakeSlider = intakeSlider;
+  /** Creates a new MoveTurretCommand. */
+  public MoveTurretCommand(Turret turret, CommandXboxController controller) {
+    this.turret = turret;
     this.controller = controller;
-    addRequirements(intakeSlider);
+    addRequirements(turret);
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -29,8 +28,7 @@ public class UseSlider extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeSlider.setPower(Range.threshold(0.1, controller.getLeftY()));
-
+    turret.setTurretSpeed(Range.threshold(0.1, controller.getRightTriggerAxis()-controller.getLeftTriggerAxis()));
   }
 
   // Called once the command ends or is interrupted.

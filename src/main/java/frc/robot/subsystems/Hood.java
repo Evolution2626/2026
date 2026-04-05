@@ -29,7 +29,7 @@ public class Hood extends SubsystemBase {
 
   private HoodState hoodState = HoodState.STOPPED;  
 
-
+  private boolean isTracking = false;
   public Hood() {
     hoodMotor = new SparkMax(Constants.hoodMotorID, SparkMax.MotorType.kBrushless);
     hoodConfig.inverted(false)
@@ -67,6 +67,12 @@ public class Hood extends SubsystemBase {
       return hoodEncoder.getPosition();
     }
     
+    public boolean getIsTracking() {
+      return isTracking;
+    }
+    public void setIsTracking(boolean tracking) {
+      isTracking = tracking;
+    }
  
   @Override
   public void periodic() {
