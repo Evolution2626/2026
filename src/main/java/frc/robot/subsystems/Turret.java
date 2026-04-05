@@ -48,7 +48,7 @@ public class Turret extends SubsystemBase {
     return turn + turretEncoder.getPosition();
   }
 
-  private double limitTurretRotation(double power) {// TODO check if rotation power are correct
+  private double limitTurretRotation(double power) {
     if (getEncoderValue() > maxTurretRotation) {
       return Range.coerce(-1, 0, power);
     } else if (getEncoderValue() < minTurretRotation) {
@@ -59,7 +59,7 @@ public class Turret extends SubsystemBase {
 
   public double convertTurretAngleToEncoder(double angle) {
     // take an angle in radians and convert it to the corresponding encoder value
-    double turretToEncoderGearRatio = 60 / 22;// TODO check the big number
+    double turretToEncoderGearRatio = 125 / 22;
     return (angle / (2 * Math.PI)) * turretToEncoderGearRatio;
   }
 
