@@ -66,5 +66,7 @@ public final class Constants {
   public static int intakeSliderMotorID = 45;
   public static int feederMotorID = 35;
 
+  // swerve ratio maybe 13:16
+
 
 }

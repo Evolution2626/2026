@@ -37,9 +37,9 @@ public class DriveCommand extends Command {
     double speedY = controller.getLeftY();
     double speedR = controller.getRightX();
 
-    speedX = Range.threshold(0.1, speedX);
-    speedY = Range.threshold(0.1, speedY);
-    speedR = Range.threshold(0.1, speedR);
+    speedX = Range.threshold(0.01, Math.pow(speedX,3));
+    speedY = Range.threshold(0.01, Math.pow(speedY,3));
+    speedR = Range.threshold(0.01, Math.pow(speedR,3));
 
     speedX *= 8;
     speedY *= 8;

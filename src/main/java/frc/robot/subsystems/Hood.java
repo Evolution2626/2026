@@ -21,11 +21,11 @@ public class Hood extends SubsystemBase {
   private AbsoluteEncoder hoodEncoder;
   private SparkMaxConfig hoodConfig = new SparkMaxConfig();
 
-  double maxValue = 0.7;
-  double minValue = 0.38;
+  double maxValue = 0.60;
+  double minValue = 0.2;
 
 
-  private boolean isTracking = false;
+  private boolean isFeeding = false;
   private double target = -1;
   public Hood() {
     hoodMotor = new SparkMax(Constants.hoodMotorID, SparkMax.MotorType.kBrushless);
@@ -43,10 +43,10 @@ public class Hood extends SubsystemBase {
       SmartDashboard.putNumber("power", speed);
 
       if(getEncoderValue() >= maxValue){
-        hoodMotor.set(Range.coerce(0, 1, speed));
+        hoodMotor.set(Range.coerce(-1, 0, speed));
       }
       else if(getEncoderValue() <= minValue){
-        hoodMotor.set(Range.coerce(-1, 0, speed));
+        hoodMotor.set(Range.coerce(0, 1, speed));
       }
       else{
  hoodMotor.set(speed);
@@ -55,11 +55,11 @@ public class Hood extends SubsystemBase {
     }
  
     
-    public boolean getIsTracking() {
-      return isTracking;
+    public boolean getIsFeeding() {
+      return isFeeding;
     }
-    public void setIsTracking(boolean tracking) {
-      isTracking = tracking;
+    public void setIsFeeding(boolean IsFeeding) {
+      isFeeding = IsFeeding;
     }
     public double getTarget() {
       return target;
@@ -76,8 +76,17 @@ public class Hood extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("hood encoder value", getEncoderValue());
+
     //bas 0.70
     //haut 0.38
+     if(getEncoderValue() >= maxValue && hoodMotor.getAppliedOutput() > 0){
+        hoodMotor.set(0);
+      }
+      else if(getEncoderValue() <= minValue && hoodMotor.getAppliedOutput() < 0){
+
+        hoodMotor.set(0);
+      }
+      
     
   }
       

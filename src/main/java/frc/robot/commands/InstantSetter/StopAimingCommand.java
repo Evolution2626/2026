@@ -14,13 +14,11 @@ import frc.robot.subsystems.Turret;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class StopAimingCommand extends InstantCommand {
   private Turret turret;
-  private Hood hood;
   private Shooter shooter;
-  public StopAimingCommand(Turret turret, Hood hood, Shooter shooter) {
+  public StopAimingCommand(Turret turret, Shooter shooter) {
     this.turret = turret;
-    this.hood = hood;
     this.shooter = shooter;
-    addRequirements(turret, hood, shooter);
+    addRequirements(turret, shooter);
     // Use addRequirements() here to declare subsystem dependencies.
   }
   
@@ -29,7 +27,6 @@ public class StopAimingCommand extends InstantCommand {
   @Override
   public void initialize() {
     turret.setIsTracking(false);
-    hood.setIsTracking(false);
     shooter.setIsTracking(false);
   }
 }

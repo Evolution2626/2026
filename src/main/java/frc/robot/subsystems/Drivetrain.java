@@ -20,10 +20,13 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
@@ -56,6 +59,8 @@ public class Drivetrain extends SubsystemBase {
   FeedbackConfigs feedBackConfig;
 
   SwerveDriveKinematics kinematics;
+  SwerveDriveOdometry odometry;
+
   SparkMaxConfig turningConfig;
 
  // PIDController motorOutputPIDRotation;
@@ -63,6 +68,8 @@ public class Drivetrain extends SubsystemBase {
 
   double currentAngleRAD;
   double targetAngleRAD;
+
+  Pose2d pose;
 
     
   /** Creates a new Drivetrain. */
@@ -85,7 +92,7 @@ public class Drivetrain extends SubsystemBase {
     feedBackConfig = new FeedbackConfigs();
 
     feedBackConfig.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-    feedBackConfig.SensorToMechanismRatio = 5.14;
+    feedBackConfig.SensorToMechanismRatio = 5.54;//13-16
 
      drivingConfig.withFeedback(feedBackConfig);
      drivingConfig.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
@@ -125,10 +132,10 @@ public class Drivetrain extends SubsystemBase {
     blRotationMotor.configure(turningConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
     brRotationMotor.configure(turningConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
 
-    Translation2d frontLeftLocation = new Translation2d(-0.2, 0.31);  
-    Translation2d frontRightLocation = new Translation2d(0.2, 0.31); 
-    Translation2d backLeftLocation = new Translation2d(-0.2, -0.31); 
-    Translation2d backRightLocation = new Translation2d(0.2, -0.31); 
+    Translation2d frontLeftLocation = new Translation2d(-0.2925, 0.2925);  
+    Translation2d frontRightLocation = new Translation2d(0.2925, 0.2925); 
+    Translation2d backLeftLocation = new Translation2d(-0.2925, -0.2925); 
+    Translation2d backRightLocation = new Translation2d(0.2925, -0.2925); 
 
     flRotationController = flRotationMotor.getClosedLoopController();
     frRotationController = frRotationMotor.getClosedLoopController();
@@ -139,6 +146,14 @@ public class Drivetrain extends SubsystemBase {
     kinematics = new SwerveDriveKinematics(
       frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation
     );
+    odometry = new SwerveDriveOdometry(
+    kinematics, getGyroRotation2d(),
+  new SwerveModulePosition[] {
+    getPosition(0),
+    getPosition(1),
+    getPosition(2),
+    getPosition(3)
+  }, new Pose2d(0.0, 0.0, new Rotation2d()));
   }
 
   public void allMotorAtZero(){
@@ -153,12 +168,38 @@ public class Drivetrain extends SubsystemBase {
     brRotationMotor.set(0);
   }
 
-  public double getGyroAngle(){
+  public SwerveModulePosition getPosition(int moduleNumber){ 
+    double revolution = 0;
+    switch (moduleNumber) {
+      case 0:
+        revolution = flDriveMotor.getPosition().getValueAsDouble();
+        break;
+        case 1:
+        revolution = frDriveMotor.getPosition().getValueAsDouble();
+        break;
+        case 2:
+        revolution = blDriveMotor.getPosition().getValueAsDouble();
+        break;
+        case 3:
+        revolution = brDriveMotor.getPosition().getValueAsDouble();
+          break;
+    
+      
+    }
+    return new SwerveModulePosition(
+        revolution*Constants.RPStoMPS, new Rotation2d(returnEncoderAngle(moduleNumber)).minus(new Rotation2d(getEncoderOffset(moduleNumber))));
+  }
+
+  public static double getGyroAngle(){
     return gyro.getAngle();
   }
 
   public void resetGyroAngle(){
     gyro.reset();
+  }
+
+  public static Rotation2d getGyroRotation2d(){
+    return new Rotation2d(Units.degreesToRadians(getGyroAngle()));
   }
 
   double returnEncoderAngle(int encoderNumber){
@@ -303,5 +344,16 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("FR",returnEncoderAngle(1));
     SmartDashboard.putNumber("BL", returnEncoderAngle(2));
     SmartDashboard.putNumber("BR", returnEncoderAngle(3));
+    pose = odometry.update(getGyroRotation2d(),
+        new SwerveModulePosition[] {
+        getPosition(0),
+        getPosition(1),
+        getPosition(2),
+        getPosition(3)
+      });
+    SmartDashboard.putNumber("pose x", pose.getX());
+    SmartDashboard.putNumber("pose y", pose.getY());
+     SmartDashboard.putNumber("pose rotation", pose.getRotation().getDegrees());
+ 
   }
 }

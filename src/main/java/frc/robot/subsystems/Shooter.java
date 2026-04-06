@@ -36,11 +36,12 @@ public class Shooter extends SubsystemBase {
     shooterMotor = new SparkFlex(Constants.shooterMotorID, SparkFlex.MotorType.kBrushless);
     shooterConfig.inverted(false)
         .idleMode(IdleMode.kCoast)
-        .smartCurrentLimit(60, 60);
-    // .closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-    // .p(0.0007)
-    // .i(0)
-    // .d(0);
+        .smartCurrentLimit(60, 60)
+        
+     .closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+     .p(0.00015)//0.0008
+     .i(0)
+     .d(0).feedForward.kV(0.000145);
     shooterMotor.configure(shooterConfig, (com.revrobotics.spark.SparkBase.ResetMode) null,
         (com.revrobotics.spark.SparkBase.PersistMode) null);
 
@@ -61,7 +62,8 @@ public class Shooter extends SubsystemBase {
     // this function should start the shooter at a random power, then the aimbot
     // will adjust the power to the correct value
     // shooterController.setSetpoint(1, ControlType.kDutyCycle);
-    shooterMotor.set(1);
+    //shooterMotor.set(1);
+    shooterController.setSetpoint(350, ControlType.kVelocity);
 
   }
 

@@ -11,25 +11,29 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /** Add your docs here. */
 public class Aimbot {
 
-    static double[] redGoalCoordinates = { 0, 0 }; 
-    static double[] blueGoalCoordinates = { 0, 0 }; 
+    static double[] redGoalCoordinates = { 11.91, 4 }; 
+    static double[] blueGoalCoordinates = { 4.6, 4 }; 
 
-    private static Pose2d getRobotPose() {
+    public static Pose2d getRobotPose() {
         LimelightHelpers.PoseEstimate limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");//TODO check the name of the limelight    
 
         if (limelightMeasurement.tagCount > 0) {
             Pose2d robotPose = limelightMeasurement.pose;
+            SmartDashboard.putNumber("robot x", robotPose.getX());
+            SmartDashboard.putNumber("robot y", robotPose.getY());
+
             return robotPose;
         }
 
         return null;
     }
 
-    private static double getRobotDistanceToGoal() {
+    public static double getRobotDistanceToGoal() {
         Pose2d robotPose = getRobotPose();
         Optional<Alliance> ally = DriverStation.getAlliance();
         double goalX = ally.isPresent() && ally.get() == DriverStation.Alliance.Red ? redGoalCoordinates[0]
@@ -41,6 +45,7 @@ public class Aimbot {
             Translation2d robotTranslation = robotPose.getTranslation();
             double distance = Math
                     .sqrt(Math.pow(goalX - robotTranslation.getX(), 2) + Math.pow(goalY - robotTranslation.getY(), 2));
+                    SmartDashboard.putNumber("distance to goal", distance);
             return distance;
         }
         return 0;
@@ -72,8 +77,8 @@ public class Aimbot {
     }
 
     private static double linearVelocityInterpolation(double distance) {
-        double[] point1 = { 0, 0 }; 
-        double[] point2 = { 0, 0 }; 
+        double[] point1 = { 2.26, 3500 }; 
+        double[] point2 = { 4.5, 4800 }; 
 
         double slope = (point2[1] - point1[1]) / (point2[0] - point1[0]);
         double intercept = point1[1] - slope * point1[0];

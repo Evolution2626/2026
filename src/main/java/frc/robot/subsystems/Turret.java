@@ -23,9 +23,10 @@ public class Turret extends SubsystemBase {
   private double lastvalue = 0;
   private double currentValue = 0;
   private double minTurretRotation = -1.5;
-  private double maxTurretRotation = 2.5;
+  private double maxTurretRotation = 2.3;
 
   private boolean isTracking = false;
+  private boolean isShootingHome = false;
 
   private double target = -99;
 
@@ -33,11 +34,12 @@ public class Turret extends SubsystemBase {
   public Turret() {
     turretMotor = new SparkMax(Constants.turretMotorID, SparkMax.MotorType.kBrushless);
     turretConfig.inverted(false)
-        .idleMode(IdleMode.kBrake)
+        .idleMode(IdleMode.kCoast)
         .smartCurrentLimit(40);
     turretMotor.configure(turretConfig, (com.revrobotics.spark.SparkBase.ResetMode) null,
         (com.revrobotics.spark.SparkBase.PersistMode) null);
     turretEncoder = turretMotor.getAbsoluteEncoder();
+    lastvalue = getEncoderValue();
   }
 
   public void setTurretSpeed(double speed) {
@@ -79,6 +81,13 @@ public class Turret extends SubsystemBase {
     this.target = target;
   }
 
+  public boolean getIsShootingHome(){
+    return isShootingHome;
+  }
+  public void setIsShootingHome(boolean isShootingHome){
+    this.isShootingHome = isShootingHome;
+  }
+
   @Override
   public void periodic() {
     currentValue = turretEncoder.getPosition();
@@ -90,5 +99,6 @@ public class Turret extends SubsystemBase {
     lastvalue = currentValue;
 
     SmartDashboard.putNumber("turret encoder", getEncoderValue());
+    SmartDashboard.putNumber("target rotation", target);
   }
 }
