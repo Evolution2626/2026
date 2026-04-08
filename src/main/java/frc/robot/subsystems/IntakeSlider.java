@@ -9,13 +9,16 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeSlider extends SubsystemBase {
   private SparkMax intakeSliderMotor;
   private SparkMaxConfig intakeSliderConfig = new SparkMaxConfig();
-  DigitalInput intakeLimit = new DigitalInput(Constants.intakeSliderLimitSwitchID);
+   DigitalInput intakeLimiOut = new DigitalInput(Constants.intakeSliderLimitSwitchOUTID);
+  DigitalInput intakeLimitIn = new DigitalInput(Constants.intakeSliderLimitSwitchINID);
+
 
   public IntakeSlider() {
     intakeSliderMotor = new SparkMax(Constants.intakeSliderMotorID, SparkMax.MotorType.kBrushless);
@@ -34,6 +37,8 @@ public class IntakeSlider extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putBoolean("limit in", intakeLimitIn.get());
+    SmartDashboard.putBoolean("limit out", intakeLimiOut.get());
 
   }
 }

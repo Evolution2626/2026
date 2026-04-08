@@ -24,7 +24,7 @@ public class StartShootingCommand extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-  roller.setPower(-1);
+  roller.setPower(-0.8);
   shooter.startFeeder();
   }
 }

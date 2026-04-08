@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.subsystems.Drivetrain;
 
 /** Add your docs here. */
 public class Aimbot {
@@ -26,6 +27,7 @@ public class Aimbot {
             Pose2d robotPose = limelightMeasurement.pose;
             SmartDashboard.putNumber("robot x", robotPose.getX());
             SmartDashboard.putNumber("robot y", robotPose.getY());
+            Drivetrain.setRobotPose(robotPose);
 
             return robotPose;
         }
@@ -34,7 +36,8 @@ public class Aimbot {
     }
 
     public static double getRobotDistanceToGoal() {
-        Pose2d robotPose = getRobotPose();
+        getRobotPose();
+        Pose2d robotPose = Drivetrain.getRobotPose();
         Optional<Alliance> ally = DriverStation.getAlliance();
         double goalX = ally.isPresent() && ally.get() == DriverStation.Alliance.Red ? redGoalCoordinates[0]
                 : blueGoalCoordinates[0]; 
@@ -52,7 +55,8 @@ public class Aimbot {
     }
 
     public static double getTurretRotationOffsetToGoal() {
-        Pose2d robotPose = getRobotPose();
+         getRobotPose();
+        Pose2d robotPose = Drivetrain.getRobotPose();
         Optional<Alliance> ally = DriverStation.getAlliance();
         double goalX = ally.isPresent() && ally.get() == DriverStation.Alliance.Red ? redGoalCoordinates[0]
                 : blueGoalCoordinates[0];
@@ -64,6 +68,22 @@ public class Aimbot {
             double angleToGoal = Math.atan2(goalY - robotTranslation.getY(), goalX - robotTranslation.getX());
             double turretRotationOffset = angleToGoal - robotPose.getRotation().getRadians();
             return turretRotationOffset;//TODO check the math above
+        }
+        return 0;
+    }
+    public static double getTurretRotation(){
+        getRobotPose();
+        Pose2d robotPose = Drivetrain.getRobotPose();
+        Optional<Alliance> ally = DriverStation.getAlliance();
+        double goalX = ally.isPresent() && ally.get() == DriverStation.Alliance.Red ? redGoalCoordinates[0]
+                : blueGoalCoordinates[0];
+        double goalY = ally.isPresent() && ally.get() == DriverStation.Alliance.Red ? redGoalCoordinates[1]
+                : blueGoalCoordinates[1];
+
+        if (robotPose != null) {
+            Translation2d robotTranslation = robotPose.getTranslation();
+            double angleToGoal = Math.atan2(goalY - robotTranslation.getY(), goalX - robotTranslation.getX());
+            return angleToGoal - robotPose.getRotation().getRadians();
         }
         return 0;
     }

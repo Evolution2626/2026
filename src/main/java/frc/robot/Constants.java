@@ -44,10 +44,8 @@ public final class Constants {
 
   public static double flEOffset =-1.47;
   public static double frEOffset =-1.12;
-  public static double blEOffset = -3.05
-  
-  ;
-  public static double brEOffset = 2.37;
+  public static double blEOffset = -3.05;
+  public static double brEOffset = 2.3;
 
   public static double driveKp = 1.0;
   public static double driveKi = 0.0;
@@ -55,7 +53,8 @@ public final class Constants {
 
   public static double RPStoMPS = 4*Math.PI*2.54/100 ;
 
-  public static int intakeSliderLimitSwitchID = 0;
+  public static int intakeSliderLimitSwitchINID = 8;
+  public static int intakeSliderLimitSwitchOUTID = 9;
 
 
   public static int intakeMotorID = 9;

@@ -36,47 +36,43 @@ import frc.robot.Constants;
 import frc.util.Range;
 
 public class Drivetrain extends SubsystemBase {
-   public static final ADIS16470_IMU gyro = new ADIS16470_IMU();
+  public static final ADIS16470_IMU gyro = new ADIS16470_IMU();
 
-  private TalonFX flDriveMotor;
-  private TalonFX frDriveMotor;
-  private TalonFX blDriveMotor;
-  private TalonFX brDriveMotor;
+  private static TalonFX flDriveMotor;
+  private static TalonFX frDriveMotor;
+  private static TalonFX blDriveMotor;
+  private static TalonFX brDriveMotor;
 
-  private SparkMax flRotationMotor;
-  private SparkMax frRotationMotor;
-  private SparkMax blRotationMotor;
-  private SparkMax brRotationMotor;
+  private static SparkMax flRotationMotor;
+  private static SparkMax frRotationMotor;
+  private static SparkMax blRotationMotor;
+  private static SparkMax brRotationMotor;
 
   private SparkClosedLoopController flRotationController;
   private SparkClosedLoopController frRotationController;
   private SparkClosedLoopController blRotationController;
   private SparkClosedLoopController brRotationController;
 
-
-
   TalonFXConfiguration drivingConfig;
   FeedbackConfigs feedBackConfig;
 
   SwerveDriveKinematics kinematics;
-  SwerveDriveOdometry odometry;
+  static SwerveDriveOdometry odometry;
 
   SparkMaxConfig turningConfig;
 
- // PIDController motorOutputPIDRotation;
-  //PIDController motorOutputPIDDrive;
+  // PIDController motorOutputPIDRotation;
+  // PIDController motorOutputPIDDrive;
 
   double currentAngleRAD;
   double targetAngleRAD;
 
   Pose2d pose;
 
-    
   /** Creates a new Drivetrain. */
   public Drivetrain() {
-    //motorOutputPIDRotation = new PIDController(0.5, 0, 0.00); 
-    //motorOutputPIDRotation.enableContinuousInput(-Math.PI, Math.PI);
-
+    // motorOutputPIDRotation = new PIDController(0.5, 0, 0.00);
+    // motorOutputPIDRotation.enableContinuousInput(-Math.PI, Math.PI);
 
     flRotationMotor = new SparkMax(Constants.flR, MotorType.kBrushless);
     frRotationMotor = new SparkMax(Constants.frR, MotorType.kBrushless);
@@ -92,50 +88,54 @@ public class Drivetrain extends SubsystemBase {
     feedBackConfig = new FeedbackConfigs();
 
     feedBackConfig.FeedbackSensorSource = FeedbackSensorSourceValue.RotorSensor;
-    feedBackConfig.SensorToMechanismRatio = 5.54;//13-16
+    feedBackConfig.SensorToMechanismRatio = 5.54;// 13-16
 
-     drivingConfig.withFeedback(feedBackConfig);
-     drivingConfig.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
-     drivingConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-     drivingConfig.CurrentLimits.StatorCurrentLimit = 40;
-     drivingConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
-     drivingConfig.CurrentLimits.SupplyCurrentLimit = 80;
-    
-    
+    drivingConfig.withFeedback(feedBackConfig);
+    drivingConfig.MotorOutput.withInverted(InvertedValue.Clockwise_Positive);
+    drivingConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    drivingConfig.CurrentLimits.StatorCurrentLimit = 40;
+    drivingConfig.CurrentLimits.SupplyCurrentLimitEnable = true;
+    drivingConfig.CurrentLimits.SupplyCurrentLimit = 80;
+
     flDriveMotor.getConfigurator().apply(drivingConfig);
-    flDriveMotor.getConfigurator().apply(new Slot0Configs().withKP(Constants.driveKp).withKI(Constants.driveKi).withKD(Constants.driveKd));
+    flDriveMotor.getConfigurator()
+        .apply(new Slot0Configs().withKP(Constants.driveKp).withKI(Constants.driveKi).withKD(Constants.driveKd));
     frDriveMotor.getConfigurator().apply(drivingConfig);
-    frDriveMotor.getConfigurator().apply(new Slot0Configs().withKP(Constants.driveKp).withKI(Constants.driveKi).withKD(Constants.driveKd));
+    frDriveMotor.getConfigurator()
+        .apply(new Slot0Configs().withKP(Constants.driveKp).withKI(Constants.driveKi).withKD(Constants.driveKd));
     blDriveMotor.getConfigurator().apply(drivingConfig);
-    blDriveMotor.getConfigurator().apply(new Slot0Configs().withKP(Constants.driveKp).withKI(Constants.driveKi).withKD(Constants.driveKd));
+    blDriveMotor.getConfigurator()
+        .apply(new Slot0Configs().withKP(Constants.driveKp).withKI(Constants.driveKi).withKD(Constants.driveKd));
     brDriveMotor.getConfigurator().apply(drivingConfig);
-    brDriveMotor.getConfigurator().apply(new Slot0Configs().withKP(Constants.driveKp).withKI(Constants.driveKi).withKD(Constants.driveKd));
-
-   
+    brDriveMotor.getConfigurator()
+        .apply(new Slot0Configs().withKP(Constants.driveKp).withKI(Constants.driveKi).withKD(Constants.driveKd));
 
     turningConfig = new SparkMaxConfig();
     turningConfig
-                    .inverted(false)
-                    .idleMode(IdleMode.kBrake)
-                    .smartCurrentLimit(20)
-                    .closedLoopRampRate(0.01)
-                    .openLoopRampRate(0.2)
-                    .closedLoop.feedbackSensor(FeedbackSensor.kAnalogSensor)
-                    .p(2)
-                    .i(0)
-                    .d(0)
-                    .positionWrappingInputRange(0, 3.3)
-                    .positionWrappingEnabled(true);
+        .inverted(false)
+        .idleMode(IdleMode.kBrake)
+        .smartCurrentLimit(20)
+        .closedLoopRampRate(0.01)
+        .openLoopRampRate(0.2).closedLoop.feedbackSensor(FeedbackSensor.kAnalogSensor)
+        .p(2)
+        .i(0)
+        .d(0)
+        .positionWrappingInputRange(0, 3.3)
+        .positionWrappingEnabled(true);
 
-    flRotationMotor.configure(turningConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
-    frRotationMotor.configure(turningConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
-    blRotationMotor.configure(turningConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
-    brRotationMotor.configure(turningConfig, (com.revrobotics.spark.SparkBase.ResetMode) null, (com.revrobotics.spark.SparkBase.PersistMode) null);
+    flRotationMotor.configure(turningConfig, (com.revrobotics.spark.SparkBase.ResetMode) null,
+        (com.revrobotics.spark.SparkBase.PersistMode) null);
+    frRotationMotor.configure(turningConfig, (com.revrobotics.spark.SparkBase.ResetMode) null,
+        (com.revrobotics.spark.SparkBase.PersistMode) null);
+    blRotationMotor.configure(turningConfig, (com.revrobotics.spark.SparkBase.ResetMode) null,
+        (com.revrobotics.spark.SparkBase.PersistMode) null);
+    brRotationMotor.configure(turningConfig, (com.revrobotics.spark.SparkBase.ResetMode) null,
+        (com.revrobotics.spark.SparkBase.PersistMode) null);
 
-    Translation2d frontLeftLocation = new Translation2d(-0.2925, 0.2925);  
-    Translation2d frontRightLocation = new Translation2d(0.2925, 0.2925); 
-    Translation2d backLeftLocation = new Translation2d(-0.2925, -0.2925); 
-    Translation2d backRightLocation = new Translation2d(0.2925, -0.2925); 
+    Translation2d frontLeftLocation = new Translation2d(-0.2925, 0.2925);
+    Translation2d frontRightLocation = new Translation2d(0.2925, 0.2925);
+    Translation2d backLeftLocation = new Translation2d(-0.2925, -0.2925);
+    Translation2d backRightLocation = new Translation2d(0.2925, -0.2925);
 
     flRotationController = flRotationMotor.getClosedLoopController();
     frRotationController = frRotationMotor.getClosedLoopController();
@@ -144,19 +144,18 @@ public class Drivetrain extends SubsystemBase {
 
     // Creating my kinematics object using the module locations
     kinematics = new SwerveDriveKinematics(
-      frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation
-    );
+        frontLeftLocation, frontRightLocation, backLeftLocation, backRightLocation);
     odometry = new SwerveDriveOdometry(
-    kinematics, getGyroRotation2d(),
-  new SwerveModulePosition[] {
-    getPosition(0),
-    getPosition(1),
-    getPosition(2),
-    getPosition(3)
-  }, new Pose2d(0.0, 0.0, new Rotation2d()));
+        kinematics, getGyroRotation2d(),
+        new SwerveModulePosition[] {
+            getPosition(0),
+            getPosition(1),
+            getPosition(2),
+            getPosition(3)
+        }, new Pose2d(0.0, 0.0, new Rotation2d()));
   }
 
-  public void allMotorAtZero(){
+  public void allMotorAtZero() {
     flDriveMotor.set(0);
     frDriveMotor.set(0);
     blDriveMotor.set(0);
@@ -168,41 +167,56 @@ public class Drivetrain extends SubsystemBase {
     brRotationMotor.set(0);
   }
 
-  public SwerveModulePosition getPosition(int moduleNumber){ 
+  public static void setRobotPose(Pose2d pose) {
+    odometry.resetPosition(getGyroRotation2d(), new SwerveModulePosition[] {
+        getPosition(0),
+        getPosition(1),
+        getPosition(2),
+        getPosition(3)
+    }, new Pose2d(pose.getX(), pose.getY(), getGyroRotation2d()));
+  }
+
+  public static SwerveModulePosition getPosition(int moduleNumber) {
     double revolution = 0;
     switch (moduleNumber) {
       case 0:
         revolution = flDriveMotor.getPosition().getValueAsDouble();
         break;
-        case 1:
+      case 1:
         revolution = frDriveMotor.getPosition().getValueAsDouble();
         break;
-        case 2:
+      case 2:
         revolution = blDriveMotor.getPosition().getValueAsDouble();
         break;
-        case 3:
+      case 3:
         revolution = brDriveMotor.getPosition().getValueAsDouble();
-          break;
-    
-      
+        break;
+
     }
     return new SwerveModulePosition(
-        revolution*Constants.RPStoMPS, new Rotation2d(returnEncoderAngle(moduleNumber)).minus(new Rotation2d(getEncoderOffset(moduleNumber))));
+        revolution * Constants.RPStoMPS,
+        new Rotation2d(returnEncoderAngle(moduleNumber)).minus(new Rotation2d(getEncoderOffset(moduleNumber))));
   }
 
-  public static double getGyroAngle(){
+  public static double getGyroAngle() {
     return gyro.getAngle();
   }
 
-  public void resetGyroAngle(){
+  public void resetGyroAngle() {
     gyro.reset();
+    odometry.resetRotation(getGyroRotation2d());
   }
 
-  public static Rotation2d getGyroRotation2d(){
-    return new Rotation2d(Units.degreesToRadians(getGyroAngle()));
+ 
+
+  public static Rotation2d getGyroRotation2d() {
+    return new Rotation2d(Units.degreesToRadians(getGyroAngle())).minus(new Rotation2d(Math.PI/2));
+  }
+  public static Pose2d getRobotPose(){
+    return odometry.getPoseMeters();
   }
 
-  double returnEncoderAngle(int encoderNumber){
+  static double returnEncoderAngle(int encoderNumber) {
     switch (encoderNumber) {
       case 0:
         double v = MathUtil.clamp(flRotationMotor.getAnalog().getPosition(), 0.0, 3.3);
@@ -225,25 +239,32 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
-   private double getEncoderOffset(int encoderNumber) {
+  private static double getEncoderOffset(int encoderNumber) {
     switch (encoderNumber) {
-      case 0: return Constants.flEOffset;
-      case 1: return Constants.frEOffset;
-      case 2: return Constants.blEOffset;
-      case 3: return Constants.brEOffset;
-      default: return 0.0;
+      case 0:
+        return Constants.flEOffset;
+      case 1:
+        return Constants.frEOffset;
+      case 2:
+        return Constants.blEOffset;
+      case 3:
+        return Constants.brEOffset;
+      default:
+        return 0.0;
     }
   }
 
   // wrap angle to [-PI, PI]
   private double wrapRadians(double angle) {
-    while (angle > Math.PI) angle -= 2.0 * Math.PI;
-    while (angle <= -Math.PI) angle += 2.0 * Math.PI;
+    while (angle > Math.PI)
+      angle -= 2.0 * Math.PI;
+    while (angle <= -Math.PI)
+      angle += 2.0 * Math.PI;
     return angle;
   }
 
   // apply encoder offset before commanding the SparkMax
-  void goToAngle(Rotation2d targetAngle, SparkMax rotationMotor, int encoderNumber){
+  void goToAngle(Rotation2d targetAngle, SparkMax rotationMotor, int encoderNumber) {
 
     double radians = targetAngle.plus(new Rotation2d(getEncoderOffset(encoderNumber))).getRadians();
 
@@ -254,70 +275,86 @@ public class Drivetrain extends SubsystemBase {
     rotationMotor.getClosedLoopController().setSetpoint(normalized, ControlType.kPosition);
   }
 
-  //fontion qui va faire tourner une roue à une certaine vitesse linéaire en m/s
-  /*public double setLinearVelocity(double targetSpeed, TalonFX driveMotor){
-    double currentMotorSpeed =  driveMotor.getVelocity().getValueAsDouble();
-    //ajouter un PID qui calcule la vitesse à output dans le moteur pour atteindre le targetSpeed de manière optimale
-    //peut-être utiliser le PID inclut dans les sparkmax pour plus d'efficacité
-    double motorOutput = MathUtil.clamp(motorOutputPIDDrive.calculate(currentMotorSpeed, targetSpeed), -1, 1);
-    
-	return motorOutput;
-  }*/
-//fontion qui va orienter la roue vers un certain angle en rotation2d
- /*  public double goToAngle(Rotation2d targetAngle, SparkMax rotationMotor, int encoderNumber){
-    currentAngleRAD = returnEncoderAngle(encoderNumber);
-    targetAngleRAD = targetAngle.getRadians(); 
-    SmartDashboard.putNumber("target angle", targetAngleRAD);
-    
+  // fontion qui va faire tourner une roue à une certaine vitesse linéaire en m/s
+  /*
+   * public double setLinearVelocity(double targetSpeed, TalonFX driveMotor){
+   * double currentMotorSpeed = driveMotor.getVelocity().getValueAsDouble();
+   * //ajouter un PID qui calcule la vitesse à output dans le moteur pour
+   * atteindre le targetSpeed de manière optimale
+   * //peut-être utiliser le PID inclut dans les sparkmax pour plus d'efficacité
+   * double motorOutput =
+   * MathUtil.clamp(motorOutputPIDDrive.calculate(currentMotorSpeed, targetSpeed),
+   * -1, 1);
+   * 
+   * return motorOutput;
+   * }
+   */
+  // fontion qui va orienter la roue vers un certain angle en rotation2d
+  /*
+   * public double goToAngle(Rotation2d targetAngle, SparkMax rotationMotor, int
+   * encoderNumber){
+   * currentAngleRAD = returnEncoderAngle(encoderNumber);
+   * targetAngleRAD = targetAngle.getRadians();
+   * SmartDashboard.putNumber("target angle", targetAngleRAD);
+   * 
+   * 
+   * //ajouter un PID qui calcule la vitesse à output dans le moteur pour
+   * atteindre le targetAngle de manière optimale
+   * //peut-être utiliser le PID inclut dans les sparkmax pour plus d'efficacité
+   * double motorOutput =
+   * MathUtil.clamp(motorOutputPIDRotation.calculate(currentAngleRAD,
+   * targetAngleRAD), -1, 1);
+   * motorOutput = Range.threshold(0.05, motorOutput);
+   * SmartDashboard.putNumber("motor output", motorOutput);
+   * return motorOutput;
+   * }
+   */
+  /*
+   * void goToAngle(Rotation2d targetAngle, SparkMax rotationMotor){
+   * 
+   * double radians = targetAngle.getRadians();
+   * // map from [-PI, PI] to [0, 1]
+   * double normalized = ((radians + Math.PI) / (2.0 * Math.PI))*3.3;
+   * normalized = MathUtil.clamp(normalized, 0.0, 3.3);
+   * rotationMotor.getClosedLoopController().setSetpoint(normalized,
+   * ControlType.kPosition);
+   * 
+   * }
+   */
+  // fonction qui va gérer la position et la vitesse d'une roue
+  public void driveOneSwerve(SwerveModuleState moduleState, SparkMax rotationMotor, TalonFX driveMotor,
+      int encoderNumber) {
 
-    //ajouter un PID qui calcule la vitesse à output dans le moteur pour atteindre le targetAngle de manière optimale
-     //peut-être utiliser le PID inclut dans les sparkmax pour plus d'efficacité
-    double motorOutput = MathUtil.clamp(motorOutputPIDRotation.calculate(currentAngleRAD, targetAngleRAD), -1, 1);
-    motorOutput = Range.threshold(0.05, motorOutput);
-    SmartDashboard.putNumber("motor output", motorOutput);
-    return motorOutput;
-  }*/
- /* void goToAngle(Rotation2d targetAngle, SparkMax rotationMotor){
-    
-    double radians = targetAngle.getRadians();
-    // map from [-PI, PI] to [0, 1]
-    double normalized = ((radians + Math.PI) / (2.0 * Math.PI))*3.3;
-    normalized = MathUtil.clamp(normalized, 0.0, 3.3);
-    rotationMotor.getClosedLoopController().setSetpoint(normalized, ControlType.kPosition);
-
-  }*/ 
-//fonction qui va gérer la position et la vitesse d'une roue
-  public void driveOneSwerve(SwerveModuleState moduleState, SparkMax rotationMotor, TalonFX driveMotor, int encoderNumber){
-    
     // create a velocity closed-loop request, voltage output, slot 0 configs
     final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
 
     // set velocity to 8 rps, add 0.5 V to overcome gravity
-    driveMotor.setControl(m_request.withVelocity(moduleState.speedMetersPerSecond/Constants.RPStoMPS*1.5));
+    driveMotor.setControl(m_request.withVelocity(moduleState.speedMetersPerSecond / Constants.RPStoMPS * 1.5));
     goToAngle(moduleState.angle, rotationMotor, encoderNumber);
 
-    //rotationMotor.set(goToAngle(moduleState.angle, rotationMotor, encoderNumber));
-   // goToAngle(moduleState.angle, rotationMotor, encoderNumber);
+    // rotationMotor.set(goToAngle(moduleState.angle, rotationMotor,
+    // encoderNumber));
+    // goToAngle(moduleState.angle, rotationMotor, encoderNumber);
   }
 
-  public void driveSwerve(double x, double y, double r, boolean fieldRelative){
+  public void driveSwerve(double x, double y, double r, boolean fieldRelative) {
     // Example chassis speeds: 1 meter per second forward, 3 meters
     // per second to the left, and rotation at 1.5 radians per second
     // counterclockwise.
     ChassisSpeeds speeds = new ChassisSpeeds();
-    
+
     if (fieldRelative) {
-      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, new Rotation2d(Units.degreesToRadians(getGyroAngle()))); 
+      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, new Rotation2d(Units.degreesToRadians(getGyroAngle())));
 
     } else {
-      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, new Rotation2d(0)); 
+      speeds = ChassisSpeeds.fromFieldRelativeSpeeds(x, y, r, new Rotation2d(0));
 
     }
     // Convert to module states
     SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(speeds);
     // Front left module state
     SwerveModuleState frontLeft = moduleStates[0];
-   frontLeft.optimize(new Rotation2d(returnEncoderAngle(0)).minus(new Rotation2d(getEncoderOffset(0))));
+    frontLeft.optimize(new Rotation2d(returnEncoderAngle(0)).minus(new Rotation2d(getEncoderOffset(0))));
     // // Front right module state
     SwerveModuleState frontRight = moduleStates[1];
     frontRight.optimize(new Rotation2d(returnEncoderAngle(1)).minus(new Rotation2d(getEncoderOffset(1))));
@@ -335,25 +372,26 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-   SmartDashboard.putNumber("analog", blRotationMotor.getAnalog().getPosition());
-    //SmartDashboard.putNumber("analog error", blRotationMotor.getClosedLoopController().getSetpoint());
+    SmartDashboard.putNumber("analog", blRotationMotor.getAnalog().getPosition());
+    // SmartDashboard.putNumber("analog error",
+    // blRotationMotor.getClosedLoopController().getSetpoint());
     SmartDashboard.putNumber("Gyro", getGyroAngle());
     SmartDashboard.putNumber("velocity", frDriveMotor.getVelocity().getValueAsDouble());
 
-     SmartDashboard.putNumber("FL", returnEncoderAngle(0));
-    SmartDashboard.putNumber("FR",returnEncoderAngle(1));
+    SmartDashboard.putNumber("FL", returnEncoderAngle(0));
+    SmartDashboard.putNumber("FR", returnEncoderAngle(1));
     SmartDashboard.putNumber("BL", returnEncoderAngle(2));
     SmartDashboard.putNumber("BR", returnEncoderAngle(3));
     pose = odometry.update(getGyroRotation2d(),
         new SwerveModulePosition[] {
-        getPosition(0),
-        getPosition(1),
-        getPosition(2),
-        getPosition(3)
-      });
+            getPosition(0),
+            getPosition(1),
+            getPosition(2),
+            getPosition(3)
+        });
     SmartDashboard.putNumber("pose x", pose.getX());
     SmartDashboard.putNumber("pose y", pose.getY());
-     SmartDashboard.putNumber("pose rotation", pose.getRotation().getDegrees());
- 
+    SmartDashboard.putNumber("pose rotation", pose.getRotation().getDegrees());
+
   }
 }

@@ -33,19 +33,19 @@ public class TurretTrackingCommand extends Command {
   @Override
   public void execute() {
     if (turret.getIsTracking()) {
-      if (turret.getTarget() == -99) {
+      
         turret.setTarget(
-           turret.getEncoderValue() - turret.convertTurretAngleToEncoder(Aimbot.getTurretRotationOffsetToGoal()));
+          -turret.convertTurretAngleToEncoder(Aimbot.getTurretRotation())-0.82);
           //turret.setTarget(turret.convertTurretAngleToEncoder(Math.PI/2));
-      } else {
+
         double power = turretPID.calculate(turret.getEncoderValue(), turret.getTarget());
         if(Math.abs(power) < 0.1) turret.setTarget(-99);
         turret.setTurretSpeed(power);
-      }
+      
 
     }
     else if(turret.getIsShootingHome()){
-      double targetTurret = turret.convertTurretAngleToEncoder((((Drivetrain.getGyroAngle()+180)%360)-180)/360*2*Math.PI)+0.18;
+      double targetTurret = turret.convertTurretAngleToEncoder((((Drivetrain.getGyroAngle()+180)%360)-180)/360*2*Math.PI)+0.52;
       turret.setTurretSpeed(turretPID.calculate(turret.getEncoderValue(), targetTurret));
 
     } else {

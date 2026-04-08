@@ -20,10 +20,10 @@ public class Turret extends SubsystemBase {
   private SparkMaxConfig turretConfig = new SparkMaxConfig();
 
   private double turn = 0;
-  private double lastvalue = 0;
+  private double lastvalue = 0.5;
   private double currentValue = 0;
-  private double minTurretRotation = -1.5;
-  private double maxTurretRotation = 2.3;
+  private double minTurretRotation = -1.3;
+  private double maxTurretRotation = 2.5;
 
   private boolean isTracking = false;
   private boolean isShootingHome = false;
@@ -34,7 +34,7 @@ public class Turret extends SubsystemBase {
   public Turret() {
     turretMotor = new SparkMax(Constants.turretMotorID, SparkMax.MotorType.kBrushless);
     turretConfig.inverted(false)
-        .idleMode(IdleMode.kCoast)
+        .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(40);
     turretMotor.configure(turretConfig, (com.revrobotics.spark.SparkBase.ResetMode) null,
         (com.revrobotics.spark.SparkBase.PersistMode) null);
