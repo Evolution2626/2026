@@ -21,6 +21,6 @@ public class StartIntakeCommand extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-   intake.setPower(0.7);
+   intake.setPower(0.6);
   }
 }

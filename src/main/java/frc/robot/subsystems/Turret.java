@@ -29,6 +29,8 @@ public class Turret extends SubsystemBase {
   private boolean isShootingHome = false;
 
   private double target = -99;
+  private double turretModifier = 0;
+  private boolean manual = false;
 
   /** Creates a new Turret. */
   public Turret() {
@@ -87,6 +89,31 @@ public class Turret extends SubsystemBase {
   public void setIsShootingHome(boolean isShootingHome){
     this.isShootingHome = isShootingHome;
   }
+  public double getMin(){
+    return minTurretRotation;
+  }
+  public double getMax(){
+    return maxTurretRotation;
+  }
+    public void incrementModifier(){
+    turretModifier += 0.1;
+  }
+  public void decrementModifier(){
+    turretModifier -= 0.1;
+  }
+  public double getModifier(){
+    return turretModifier;
+  }
+  public void resetModifier(){
+    turretModifier = 0;
+  }
+  public boolean getIfManual(){
+    return manual;
+  }
+  public void setManual(boolean manual){
+    this.manual = manual;
+  }
+
 
   @Override
   public void periodic() {

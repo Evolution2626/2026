@@ -31,6 +31,7 @@ public class Shooter extends SubsystemBase {
   private double targetRPM = 0;
   private boolean isTracking = false;
 
+
   /** Creates a new Shooter. */
   public Shooter() {
     shooterMotor = new SparkFlex(Constants.shooterMotorID, SparkFlex.MotorType.kBrushless);
@@ -88,6 +89,9 @@ public class Shooter extends SubsystemBase {
   public void stopFeeder() {
     feederMotor.set(0);
   }
+   public void reverseFeeder() {
+    feederMotor.set(1.0);
+  }
 
   public boolean getIsTracking() {
     return isTracking;
@@ -96,6 +100,7 @@ public class Shooter extends SubsystemBase {
   public void setIsTracking(boolean tracking) {
     isTracking = tracking;
   }
+
 
   @Override
   public void periodic() {

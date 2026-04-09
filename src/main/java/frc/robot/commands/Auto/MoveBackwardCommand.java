@@ -21,7 +21,7 @@ public class MoveBackwardCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drivetrain.driveSwerve(-0.3, 0, 0, true);
+    drivetrain.driveSwerve(0, -1, 0, true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

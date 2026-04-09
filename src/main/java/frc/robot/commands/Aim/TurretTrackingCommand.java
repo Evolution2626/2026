@@ -9,12 +9,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Aimbot;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Turret;
+import frc.util.Range;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class TurretTrackingCommand extends Command {
   Turret turret;
 
   PIDController turretPID = new PIDController(0.75, 0.05, 0);
+  double targetAngle = 0;
 
   /** Creates a new TurretTrackingCommand. */
   public TurretTrackingCommand(Turret turret) {
@@ -34,18 +36,19 @@ public class TurretTrackingCommand extends Command {
   public void execute() {
     if (turret.getIsTracking()) {
       
+      if(!turret.getIfManual()) targetAngle = -turret.convertTurretAngleToEncoder(Aimbot.getTurretRotation().getRadians())-0.50;;
         turret.setTarget(
-          -turret.convertTurretAngleToEncoder(Aimbot.getTurretRotation())-0.82);
+          Range.coerce(turret.getMin(), turret.getMax(), (targetAngle+turret.getModifier())));
           //turret.setTarget(turret.convertTurretAngleToEncoder(Math.PI/2));
 
-        double power = turretPID.calculate(turret.getEncoderValue(), turret.getTarget()/2);
+        double power = turretPID.calculate(turret.getEncoderValue(), turret.getTarget());
         //if(Math.abs(power) < 0.1) turret.setTarget(-99);
         turret.setTurretSpeed(power);
       
 
     }
     else if(turret.getIsShootingHome()){
-      double targetTurret = turret.convertTurretAngleToEncoder((((Drivetrain.getGyroAngle()+180)%360)-180)/360*2*Math.PI)+0.52;
+      double targetTurret = Range.coerce(turret.getMin(), turret.getMax(), (turret.convertTurretAngleToEncoder((((Drivetrain.getGyroAngle()+180)%360)-180)/360*2*Math.PI)+0.52));
       turret.setTurretSpeed(turretPID.calculate(turret.getEncoderValue(), targetTurret)/2);
 
     } else {

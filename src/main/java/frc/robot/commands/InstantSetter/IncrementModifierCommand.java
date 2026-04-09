@@ -5,30 +5,23 @@
 package frc.robot.commands.InstantSetter;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.Hood;
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Turret;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class StopAimingCommand extends InstantCommand {
-  private Turret turret;
-  private Shooter shooter;
-  public StopAimingCommand(Turret turret, Shooter shooter) {
+public class IncrementModifierCommand extends InstantCommand {
+  Turret turret;
+  public IncrementModifierCommand(Turret turret) {
     this.turret = turret;
-    this.shooter = shooter;
-    addRequirements(turret, shooter);
+    addRequirements(turret);
     // Use addRequirements() here to declare subsystem dependencies.
   }
-  
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    turret.setIsTracking(false);
-    shooter.setIsTracking(false);
-    turret.resetModifier();
-        turret.setManual(false);
+    turret.incrementModifier();
+    turret.setManual(true);
   }
 }

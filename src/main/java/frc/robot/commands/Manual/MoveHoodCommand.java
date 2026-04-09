@@ -28,7 +28,10 @@ public class MoveHoodCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    hood.setHoodSpeed(Range.threshold(0.1, controller.getRightY()/4));
+    if(controller.start().getAsBoolean()){
+      hood.setHoodSpeed(Range.threshold(0.1, controller.getRightY()/4));
+    }
+   
   }
 
   // Called once the command ends or is interrupted.

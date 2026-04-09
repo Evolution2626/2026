@@ -6,20 +6,27 @@ package frc.robot;
 
 
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.Aim.ShooterTrackingCommand;
 import frc.robot.commands.Aim.TurretTrackingCommand;
+import frc.robot.commands.Auto.VeryBadAutoV2;
 import frc.robot.commands.Drivetrain.DriveCommand;
 import frc.robot.commands.Drivetrain.ResetGyroCommand;
 import frc.robot.commands.InstantSetter.StartAimingCommand;
 import frc.robot.commands.InstantSetter.StartShooterCommand;
+import frc.robot.commands.InstantSetter.StartShooterLastResort;
 import frc.robot.commands.InstantSetter.StartShootingCommand;
 import frc.robot.commands.InstantSetter.StartShootingHomeCommand;
 import frc.robot.commands.InstantSetter.StopAimingCommand;
 import frc.robot.commands.InstantSetter.StopShooterCommand;
 import frc.robot.commands.InstantSetter.StopShootingCommand;
+import frc.robot.commands.InstantSetter.DecrementModifierCommand;
+import frc.robot.commands.InstantSetter.IncrementModifierCommand;
+import frc.robot.commands.InstantSetter.ReverseShootingCommand;
 import frc.robot.commands.InstantSetter.StopShootingHomeCommand;
 import frc.robot.commands.InstantSetter.Intake.ReverseIntakeCommand;
 import frc.robot.commands.InstantSetter.Intake.StartIntakeCommand;
@@ -55,9 +62,12 @@ public class RobotContainer {
   private static final Intake intake = new Intake();
   private static final Turret turret = new Turret();
 
+  private SendableChooser<Command> autoChooser = new SendableChooser<>();
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    SmartDashboard.putData(autoChooser);
     // Configure the trigger bindings
     drivetrain.setDefaultCommand(new DriveCommand(drivetrain, controller));
 
@@ -69,8 +79,11 @@ public class RobotContainer {
 
     //Manual control commands Deprecated soon
     intakeSlider.setDefaultCommand(new UseSlider(intakeSlider, controller1));
-    //hood.setDefaultCommand(new MoveHoodCommand(hood, controller1));
+    hood.setDefaultCommand(new MoveHoodCommand(hood, controller1));
     //turret.setDefaultCommand(new MoveTurretCommand(turret, controller1));
+
+    autoChooser.addOption("fuck all", null);
+    autoChooser.addOption("Very bad auto v2", new VeryBadAutoV2(drivetrain, turret, shooter, roller, intakeSlider));
 
 
     configureBindings();
@@ -91,10 +104,16 @@ public class RobotContainer {
     controller1.rightBumper().onFalse(new StopShooterCommand(shooter));
     controller1.y().onTrue(new StartShootingCommand(roller, shooter));
     controller1.y().onFalse(new StopShootingCommand(roller, shooter));
+    controller1.a().onTrue(new ReverseShootingCommand(roller, shooter));
+    controller1.a().onFalse(new StopShootingCommand(roller, shooter));
+    controller1.x().onTrue(new StartShooterLastResort(shooter));
+    controller1.x().onFalse(new StopShooterCommand(shooter));
     controller1.rightBumper().onTrue(new StartAimingCommand(turret, shooter));
     controller1.rightBumper().onFalse(new StopAimingCommand(turret, shooter));
     controller1.leftBumper().onTrue(new StartShootingHomeCommand(hood, turret, shooter));
     controller1.leftBumper().onFalse(new StopShootingHomeCommand(hood, turret, shooter));
+    controller1.povRight().onTrue(new IncrementModifierCommand(turret));
+    controller1.povLeft().onTrue(new DecrementModifierCommand(turret));
 
     controller1.rightTrigger().onTrue(new StartIntakeCommand(intake));
     controller1.rightTrigger().onFalse(new StopIntakeCommand(intake));
@@ -113,6 +132,6 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return null;
+    return autoChooser.getSelected();
   }
 }

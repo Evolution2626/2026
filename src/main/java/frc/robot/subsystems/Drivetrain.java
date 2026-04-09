@@ -156,7 +156,7 @@ public class Drivetrain extends SubsystemBase {
             getPosition(1),
             getPosition(2),
             getPosition(3)
-        }, new Pose2d(0.0, 0.0, new Rotation2d()));
+        }, new Pose2d(4.0, 4.0, new Rotation2d()));
   }
 
   public void allMotorAtZero() {
@@ -216,6 +216,10 @@ public class Drivetrain extends SubsystemBase {
   public static Rotation2d getGyroRotation2d() {
 
     return new Rotation2d(Units.degreesToRadians(getGyroAngle())).minus(new Rotation2d(Math.PI/2));
+  }
+  public static Rotation2d getGyroRotation2dPose() {
+
+    return new Rotation2d(Units.degreesToRadians(getGyroAngle()));
   }
   public static Pose2d getRobotPose(){
     return odometry.getPoseMeters();
