@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.util.Range;
 
 public class IntakeSlider extends SubsystemBase {
   private SparkMax intakeSliderMotor;
@@ -32,7 +33,16 @@ public class IntakeSlider extends SubsystemBase {
   }
 
   public void setPower(double power) {
-    intakeSliderMotor.set(power);
+    if(intakeLimitIn.get()){
+      intakeSliderMotor.set(Range.coerce(-1, 0, power));
+    }
+    else if(intakeLimiOut.get()){
+      intakeSliderMotor.set(Range.coerce(0, 1, power));
+    }
+    else{
+          intakeSliderMotor.set(power);
+    }
+
   }
 
   @Override

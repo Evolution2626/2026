@@ -88,7 +88,7 @@ public class RobotContainer {
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     //controller1.a().onTrue(new StartShooterCommand(shooter));
-    controller1.b().onTrue(new StopShooterCommand(shooter));
+    controller1.rightBumper().onFalse(new StopShooterCommand(shooter));
     controller1.y().onTrue(new StartShootingCommand(roller, shooter));
     controller1.y().onFalse(new StopShootingCommand(roller, shooter));
     controller1.rightBumper().onTrue(new StartAimingCommand(turret, shooter));
