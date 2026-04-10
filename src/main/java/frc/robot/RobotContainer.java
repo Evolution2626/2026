@@ -54,13 +54,13 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private static final CommandXboxController controller = new CommandXboxController(0);
    private static final CommandXboxController controller1 = new CommandXboxController(1);
-  private static final Drivetrain drivetrain = new Drivetrain();
-  private static final Shooter shooter = new Shooter();
-  private static final Hood hood = new Hood();
-  private static final IntakeSlider intakeSlider = new IntakeSlider();
-  private static final Roller roller = new Roller();
-  private static final Intake intake = new Intake();
-  private static final Turret turret = new Turret();
+  public static final Drivetrain drivetrain = new Drivetrain();
+  public static final Shooter shooter = new Shooter();
+  public static final Hood hood = new Hood();
+  public static final IntakeSlider intakeSlider = new IntakeSlider();
+  public static final Roller roller = new Roller();
+  public static final Intake intake = new Intake();
+  public static final Turret turret = new Turret();
 
   private SendableChooser<Command> autoChooser = new SendableChooser<>();
 
@@ -124,6 +124,14 @@ public class RobotContainer {
   
     
   }
+  public void stopThing() {
+      shooter.stopShooter();
+        turret.setIsTracking(false);
+      shooter.setIsTracking(false);
+      turret.resetModifier();
+          turret.setManual(false);
+      intake.setPower(0);;
+    }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

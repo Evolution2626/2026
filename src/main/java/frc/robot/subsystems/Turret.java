@@ -9,6 +9,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -61,10 +62,10 @@ public class Turret extends SubsystemBase {
     return power;
   }
 
-  public double convertTurretAngleToEncoder(double angle) {
+  public double convertTurretAngleToEncoder(Rotation2d angle) {
     // take an angle in radians and convert it to the corresponding encoder value
-    double turretToEncoderGearRatio = 125 / 22;
-    return (angle / (2 * Math.PI)) * turretToEncoderGearRatio;
+    double turretToEncoderGearRatio = 125.0 / 22.0;
+    return angle.getRotations() * turretToEncoderGearRatio;
   }
 
   public boolean getIsTracking() {

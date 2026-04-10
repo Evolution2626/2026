@@ -5,6 +5,8 @@
 package frc.robot.commands.Aim;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Aimbot;
 import frc.robot.subsystems.Drivetrain;
@@ -35,10 +37,12 @@ public class TurretTrackingCommand extends Command {
   @Override
   public void execute() {
     if (turret.getIsTracking()) {
+      //Aimbot.getTurretRotation().getRadians()
       
-      if(!turret.getIfManual()) targetAngle = -turret.convertTurretAngleToEncoder(Aimbot.getTurretRotation().getRadians())-0.50;;
+      
+      if(!turret.getIfManual()) targetAngle = -turret.convertTurretAngleToEncoder(Aimbot.getTurretRotation())-0.92;
         turret.setTarget(
-          Range.coerce(turret.getMin(), turret.getMax(), (targetAngle+turret.getModifier())));
+          Range.coerce(turret.getMin(), turret.getMax(), (targetAngle+turret.getModifier())));//
           //turret.setTarget(turret.convertTurretAngleToEncoder(Math.PI/2));
 
         double power = turretPID.calculate(turret.getEncoderValue(), turret.getTarget());
@@ -48,8 +52,8 @@ public class TurretTrackingCommand extends Command {
 
     }
     else if(turret.getIsShootingHome()){
-      double targetTurret = Range.coerce(turret.getMin(), turret.getMax(), (turret.convertTurretAngleToEncoder((((Drivetrain.getGyroAngle()+180)%360)-180)/360*2*Math.PI)+0.52));
-      turret.setTurretSpeed(turretPID.calculate(turret.getEncoderValue(), targetTurret)/2);
+     // double targetTurret = Range.coerce(turret.getMin(), turret.getMax(), (turret.convertTurretAngleToEncoder((((Drivetrain.getGyroAngle()+180)%360)-180)/360*2*Math.PI)+0.52));
+      //turret.setTurretSpeed(turretPID.calculate(turret.getEncoderValue(), targetTurret)/2);
 
     } else {
       turret.setTarget(-99);

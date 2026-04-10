@@ -48,7 +48,7 @@ public class Aimbot {
         getRobotPose();
         Pose2d robotPose = Drivetrain.getRobotPose();
 
-        double goalX =coordinates[0];
+        double goalX = coordinates[0];
         double goalY = coordinates[1];
 
         if (robotPose != null) {
@@ -64,7 +64,7 @@ public class Aimbot {
     public static double getTurretRotationOffsetToGoal() {
         getRobotPose();
         Pose2d robotPose = Drivetrain.getRobotPose();
-         double goalX =coordinates[0];
+        double goalX = coordinates[0];
         double goalY = coordinates[1];
 
         if (robotPose != null) {
@@ -79,15 +79,25 @@ public class Aimbot {
     public static Rotation2d getTurretRotation() {
         getRobotPose();
         Pose2d robotPose = Drivetrain.getRobotPose();
-        double goalX =coordinates[0];
+        double goalX = coordinates[0];
         double goalY = coordinates[1];
+        SmartDashboard.putNumber("goal x", goalX);
+        SmartDashboard.putNumber("goal y", goalY);
+        
+
 
         if (robotPose != null) {
             Translation2d robotTranslation = robotPose.getTranslation();
-            Rotation2d rer = new Rotation2d(goalX - robotTranslation.getX(),goalY - robotTranslation.getY());
+             SmartDashboard.putNumber("goal offset x", goalX  - robotTranslation.getX());
+        SmartDashboard.putNumber("goal offset y", goalY- robotTranslation.getY());
+            Rotation2d rer = new Rotation2d(goalX - robotTranslation.getX(), goalY - robotTranslation.getY());
+            SmartDashboard.putNumber("angle to goal(rer)", rer.getRadians());
             //double angleToGoal = Math.atan2(goalY - robotTranslation.getY(), goalX - robotTranslation.getX());
             //return new Rotation2d(angleToGoal - Drivetrain.getGyroRotation2d().getRadians());
-            return rer.minus(new Rotation2d(Drivetrain.getGyroRotation2d().getRadians()));
+            Rotation2d temp = rer.minus(Drivetrain.getGyroRotation2d());
+            SmartDashboard.putNumber("returned", temp.getRadians());
+            return temp;
+            
         }
         return null;
     }
@@ -101,12 +111,12 @@ public class Aimbot {
     }
 
     private static double linearVelocityInterpolation(double distance) {
-        double[] point1 = { 2.26, 3500 };
+        double[] point1 = { 2.26, 3300 };
         double[] point2 = { 4, 3800 };
 
         double slope = (point2[1] - point1[1]) / (point2[0] - point1[0]);
         double intercept = point1[1] - slope * point1[0];
-        return Range.coerce( 3700,7000,slope * distance + intercept);
+        return Range.coerce( 3000,7000,slope * distance + intercept);
     }
 
     private static double linearHoodAngleInterpolation(double distance) {
